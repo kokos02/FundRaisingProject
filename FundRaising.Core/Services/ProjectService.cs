@@ -17,34 +17,36 @@ namespace FundRaising.Core.Services
         {
             _dbContext = _db;
         }
+        
             
-        public ProjectOptions CreateProject(ProjectOptions _projectOptions)
+        public ProjectOptions CreateProject(ProjectOptions _projectOptions, UserOptions _userOptions)
         {
-
-            Project _newProject = new()
-            {
+            
+             Project _newProject = new()
+             {
                 Title = _projectOptions.Title,
 
                 Description = _projectOptions.Description,
 
-                ProjectCategory = _projectOptions.ProjectCategory,
+                //ProjectCategory = _projectOptions.ProjectCategory,
 
                 Deadline = _projectOptions.Deadline,
 
-                TargetFund = _projectOptions.TargetFund
+                TargetFund = _projectOptions.TargetFund,
 
-            };
+                CreatorId = _userOptions.UserId
+             };
 
-            _dbContext.Projects.Add(_newProject);
+             _dbContext.Projects.Add(_newProject);
 
-            _dbContext.SaveChanges();
+             _dbContext.SaveChanges();
 
 
             return new ProjectOptions
             {
                 ProjectId = _newProject.ProjectId,
 
-                UserId = _newProject.UserId, //Creators id
+                CreatorId = _newProject.CreatorId, //Creators id
 
                 Title = _newProject.Title,
 
@@ -65,13 +67,13 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = project.ProjectId,
 
-                UserId = project.UserId,
+                CreatorId = project.CreatorId,
 
                 Title = project.Title,
 
                 Description = project.Description,
 
-                ProjectCategory = project.ProjectCategory
+                //Category = project.ProjectCategory,
 
                 Deadline = project.Deadline,
 
@@ -92,13 +94,13 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _project.ProjectId,
 
-                UserId = _project.UserId,
+                CreatorId = _project.CreatorId,
 
                 Title = _project.Title,
 
                 Description = _project.Description,
 
-                ProjectCategory = _project.ProjectCategory,
+                //ProjectCategory = _project.ProjectCategory,
 
                 Deadline = _project.Deadline,
 
@@ -119,7 +121,7 @@ namespace FundRaising.Core.Services
 
             _project.Description = _projectOptions.Description;
 
-            _project.ProjectCategory = _projectOptions.ProjectCategory
+            //_project.ProjectCategory = _projectOptions.ProjectCategory;
 
             _project.Deadline = _projectOptions.Deadline;
 
