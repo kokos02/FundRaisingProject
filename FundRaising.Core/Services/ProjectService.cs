@@ -71,7 +71,7 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                //Category???
+                ProjectCategory = project.ProjectCategory
 
                 Deadline = project.Deadline,
 
@@ -98,7 +98,7 @@ namespace FundRaising.Core.Services
 
                 Description = _project.Description,
 
-                //Category???
+                ProjectCategory = _project.ProjectCategory,
 
                 Deadline = _project.Deadline,
 
@@ -119,7 +119,7 @@ namespace FundRaising.Core.Services
 
             _project.Description = _projectOptions.Description;
 
-            //Category???
+            _project.ProjectCategory = _projectOptions.ProjectCategory
 
             _project.Deadline = _projectOptions.Deadline;
 
