@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace FundRaising.Core.Options
 {
-    public class RewardOptions
+    public class FundOptions
     {
-        public int RewardId { get; set; }
+        public int FundId { get; set; }
+        public User User { get; set; }
         public Project Project { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-
+        
     }
 }

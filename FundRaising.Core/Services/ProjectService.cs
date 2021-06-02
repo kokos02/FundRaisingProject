@@ -21,7 +21,7 @@ namespace FundRaising.Core.Services
             
         public ProjectOptions CreateProject(ProjectOptions _projectOptions, UserOptions _userOptions)
         {
-            
+            //validation
              Project _newProject = new()
              {
                 Title = _projectOptions.Title,
@@ -34,7 +34,7 @@ namespace FundRaising.Core.Services
 
                 TargetFund = _projectOptions.TargetFund,
 
-                CreatorId = _userOptions.UserId
+                User = _dbContext.Users.Find(_userOptions.UserId)
              };
 
              _dbContext.Projects.Add(_newProject);
@@ -46,7 +46,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _newProject.ProjectId,
 
-                CreatorId = _newProject.CreatorId, //Creators id
+                //User.UserId = _newProject.User.UserId, //Creators id
 
                 Title = _newProject.Title,
 
@@ -67,7 +67,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = project.ProjectId,
 
-                CreatorId = project.CreatorId,
+                //CreatorId = project.CreatorId,
 
                 Title = project.Title,
 
@@ -94,7 +94,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _project.ProjectId,
 
-                CreatorId = _project.CreatorId,
+                //CreatorId = _project.CreatorId,
 
                 Title = _project.Title,
 

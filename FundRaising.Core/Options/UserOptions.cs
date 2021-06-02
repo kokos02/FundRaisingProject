@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FundRaising.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,7 @@ namespace FundRaising.Core.Options
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+
+        public List<Fund> FundedProjects { get; set; }
     }
 }

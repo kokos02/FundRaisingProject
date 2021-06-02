@@ -14,5 +14,6 @@ namespace FundRaising.Core.Interfaces
         public UserOptions GetUserById(int _userId);
         public bool UpdateUser(int _userId, UserOptions _userOptions);
         public bool DeleteUser(int _userId);
+        
     }
 }

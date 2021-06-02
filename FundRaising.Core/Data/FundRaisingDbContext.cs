@@ -13,6 +13,7 @@ namespace FundRaising.Core.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Reward> Rewards { get; set; }
+        public DbSet<Fund> Funds { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source = localhost; Initial Catalog = FundRaising.Core; Integrated Security = true");

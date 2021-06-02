@@ -1,3 +1,7 @@
+using FundRaising.Core.Data;
+using FundRaising.Core.Interfaces;
+using FundRaising.Core.Options;
+using FundRaising.Core.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -11,8 +15,12 @@ namespace FundRaising.Web
 {
     public class Program
     {
+       
+
+
         public static void Main(string[] args)
         {
+            
             CreateHostBuilder(args).Build().Run();
         }
 

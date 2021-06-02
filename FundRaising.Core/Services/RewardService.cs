@@ -38,7 +38,7 @@ namespace FundRaising.Core.Services
             {
                 RewardId = _newReward.RewardId,
 
-                ProjectId = _newReward.ProjectId,
+                Project = _newReward.Project,
 
                 Title = _newReward.Title,
 
@@ -59,7 +59,7 @@ namespace FundRaising.Core.Services
             {
                 RewardId = reward.RewardId,
 
-                ProjectId = reward.ProjectId,
+                Project = reward.Project,
 
                 Title = reward.Title,
 
@@ -80,7 +80,7 @@ namespace FundRaising.Core.Services
             {
                 RewardId = _reward.RewardId,
 
-                ProjectId = _reward.ProjectId,
+                Project = _reward.Project,
 
                 Title = _reward.Title,
 
