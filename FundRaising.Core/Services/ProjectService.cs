@@ -27,7 +27,7 @@ namespace FundRaising.Core.Services
 
                 Description = _projectOptions.Description,
 
-                //Category???
+                ProjectCategory = _projectOptions.ProjectCategory,
 
                 Deadline = _projectOptions.Deadline,
 
@@ -44,7 +44,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _newProject.ProjectId,
 
-                //UserId = _newProject.UserId ???
+                UserId = _newProject.UserId, //Creators id
 
                 Title = _newProject.Title,
 
