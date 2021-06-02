@@ -28,7 +28,7 @@ namespace FundRaising.Core.Services
 
                 Description = _projectOptions.Description,
 
-                //ProjectCategory = _projectOptions.ProjectCategory,
+                ProjectCategory = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), _projectOptions.Category),
 
                 Deadline = _projectOptions.Deadline,
 
@@ -73,7 +73,7 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                //Category = project.ProjectCategory,
+                Category = project.ProjectCategory.ToString(),
 
                 Deadline = project.Deadline,
 
@@ -100,7 +100,7 @@ namespace FundRaising.Core.Services
 
                 Description = _project.Description,
 
-                //ProjectCategory = _project.ProjectCategory,
+                Category =  _project.ProjectCategory.ToString(),
 
                 Deadline = _project.Deadline,
 
@@ -121,7 +121,7 @@ namespace FundRaising.Core.Services
 
             _project.Description = _projectOptions.Description;
 
-            //_project.ProjectCategory = _projectOptions.ProjectCategory;
+            _project.ProjectCategory = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), _projectOptions.Category);
 
             _project.Deadline = _projectOptions.Deadline;
 
