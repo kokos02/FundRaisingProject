@@ -51,7 +51,7 @@ namespace FundRaising.Core.Services
                 Title = _newProject.Title,
 
                 Description = _newProject.Description,
-
+                
                 TargetFund = _newProject.TargetFund
             };
         }
