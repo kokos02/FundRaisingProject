@@ -23,13 +23,13 @@ namespace FundRaising.Web.Controllers
             _db = db;
             _userService = userService;
         }
-            
+
 
 
         // GET: Users
         public IActionResult Index()
         {
-            var allUsersResult =  _userService.GetAllUsers();
+            var allUsersResult = _userService.GetAllUsers();
 
             return View(allUsersResult.Data);
         }
@@ -69,12 +69,12 @@ namespace FundRaising.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _userService.CreateUser(new UserOptions
-                 {
+                _userService.CreateUser(new UserOptions
+                {
                     Username = user.Username,
                     Email = user.Email,
                     Password = user.Password
-                 });
+                });
             }
             return View(user);
         }
@@ -101,14 +101,14 @@ namespace FundRaising.Web.Controllers
                 try
                 {
                     _userService.GetAllUsers();
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                   
-                    
-                        throw;
-                    
+
+
+                    throw;
+
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -138,7 +138,7 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-             _userService.DeleteUser(id);
+            _userService.DeleteUser(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -161,4 +161,4 @@ namespace FundRaising.Web.Controllers
     }
 }
 
-        
+

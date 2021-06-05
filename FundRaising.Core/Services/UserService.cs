@@ -53,10 +53,8 @@ namespace FundRaising.Core.Services
             {
                 _dbContext.SaveChanges();
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex.Message);
-
                 return new Result<User>(ErrorCode.InternalServerError, "Could not save user.");
             }
 
@@ -65,6 +63,8 @@ namespace FundRaising.Core.Services
                 Data = _newUser
             };
         }
+                
+
 
 
 

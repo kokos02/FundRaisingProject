@@ -20,10 +20,30 @@ namespace FundRaising.Core.Services
             _dbContext = _db;
             _projectService = projectservice;
         }
-        public RewardOptions CreateReward(RewardOptions _rewardOptions)
+        public Result<Reward> CreateReward(RewardOptions _rewardOptions)
         {
+            if (_rewardOptions == null)
+            {
+                return new Result<Reward>(ErrorCode.BadRequest, "Null options.");
+            }
+
+            if (string.IsNullOrWhiteSpace(_rewardOptions.Title) ||
+              string.IsNullOrWhiteSpace(_rewardOptions.Description) ||
+              _rewardOptions.Price <=0)
+            {
+                return new Result<Reward>(ErrorCode.BadRequest, "Not all required user options provided correctly.");
+            }
+
+            var _rewardWithSameTitle = _dbContext.Rewards.SingleOrDefault(reward => reward.Title == _rewardOptions.Title);
+
+            if (_rewardWithSameTitle != null)
+            {
+                return new Result<Reward>(ErrorCode.Conflict, $"Reward with #{_rewardOptions.Title} already exists.");
+            }
+
             Reward _newReward = new()
             {
+                ProjectId = _rewardOptions.ProjectId,
                 Title = _rewardOptions.Title,
 
                 Description = _rewardOptions.Description,
@@ -33,26 +53,27 @@ namespace FundRaising.Core.Services
             };
 
             _dbContext.Rewards.Add(_newReward);
-
-            _dbContext.SaveChanges();
-            var project = _dbContext.Projects;
-
-            return new RewardOptions
+            try
             {
-                RewardId = _newReward.RewardId,
+                _dbContext.SaveChanges();
+            }
+            catch 
+            {
+                return new Result<Reward>(ErrorCode.InternalServerError, "Could not save user.");
+            }
 
-                ProjectId = _newReward.ProjectId,
-
-                Title = _newReward.Title,
-
-                Description = _newReward.Description,
-
-                Price = _newReward.Price
+            return new Result<Reward>
+            {
+                Data = _newReward
             };
+
         }
 
+
+            
+
         
-        public List<RewardOptions> GetAllRewards()
+        public Result<List<Reward>> GetAllRewards()
         {
             List<Reward> _rewards = _dbContext.Rewards.ToList();
 
