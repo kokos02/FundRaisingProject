@@ -13,9 +13,12 @@ namespace FundRaising.Core.Services
     public class RewardService : IRewardService
     {
         private readonly IFundRaisingDbContext _dbContext;
-        public RewardService(IFundRaisingDbContext _db)
+        private readonly IProjectService _projectService;
+        
+        public RewardService(IFundRaisingDbContext _db, IProjectService projectservice)
         {
             _dbContext = _db;
+            _projectService = projectservice;
         }
         public RewardOptions CreateReward(RewardOptions _rewardOptions)
         {
@@ -32,13 +35,13 @@ namespace FundRaising.Core.Services
             _dbContext.Rewards.Add(_newReward);
 
             _dbContext.SaveChanges();
-
+            var project = _dbContext.Projects;
 
             return new RewardOptions
             {
                 RewardId = _newReward.RewardId,
 
-                Project = _newReward.Project,
+                ProjectId = _newReward.ProjectId,
 
                 Title = _newReward.Title,
 
@@ -59,7 +62,7 @@ namespace FundRaising.Core.Services
             {
                 RewardId = reward.RewardId,
 
-                Project = reward.Project,
+                ProjectId = reward.ProjectId,
 
                 Title = reward.Title,
 
@@ -80,7 +83,7 @@ namespace FundRaising.Core.Services
             {
                 RewardId = _reward.RewardId,
 
-                Project = _reward.Project,
+                ProjectId = _reward.ProjectId,
 
                 Title = _reward.Title,
 

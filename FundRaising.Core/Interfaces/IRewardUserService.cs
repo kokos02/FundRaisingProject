@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FundRaising.Core.Interfaces
 {
-    public interface IFundService
+    public interface IRewardUserService
     {
-        public bool FundProject(ProjectOptions _projectOptions, decimal _amount, UserOptions _userOptions);
+        public bool PurchaseReward(int rewardId);
     }
 }

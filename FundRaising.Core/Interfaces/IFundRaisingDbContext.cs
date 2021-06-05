@@ -13,7 +13,7 @@ namespace FundRaising.Core.Interfaces
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Reward> Rewards { get; set; }
-        public DbSet<Fund> Funds { get; set; }
+        public DbSet<UserReward> UserRewards { get; set; }
 
         public int SaveChanges();
         Task<int> SaveChangesAsync();

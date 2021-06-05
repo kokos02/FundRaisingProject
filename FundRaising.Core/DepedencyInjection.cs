@@ -19,7 +19,7 @@ namespace FundRaising.Core
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IRewardService, RewardService>();
-            services.AddScoped<IFundService, FundService>();
+            services.AddScoped<IRewardUserService, RewardUserService>();
 
             return services;
         }

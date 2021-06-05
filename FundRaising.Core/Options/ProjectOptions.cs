@@ -10,7 +10,8 @@ namespace FundRaising.Core.Options
     public class ProjectOptions
     {
         public int ProjectId { get; set; }
-        public User User { get; set; }
+        //public User User { get; set; }
+        public int CreatorId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }

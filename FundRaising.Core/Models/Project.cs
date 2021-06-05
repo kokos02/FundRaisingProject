@@ -9,7 +9,8 @@ namespace FundRaising.Core.Models
     public class Project
     {
         public int ProjectId { get; set; }
-        public User User { get; set; } //ennooyme ton creator
+        public int CreatorId { get; set; }
+        //public User User { get; set; } //ennooyme ton creator
         public string Title { get; set; }
         public string Description { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
@@ -21,7 +22,7 @@ namespace FundRaising.Core.Models
         
         public Project()
         {
-            CurrentFund = 0;
+            CurrentFund = 0m;
 
             Created = DateTime.Now;
 

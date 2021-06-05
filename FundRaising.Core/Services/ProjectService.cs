@@ -13,8 +13,8 @@ namespace FundRaising.Core.Services
     public class ProjectService : IProjectService
     {
         private readonly IFundRaisingDbContext _dbContext;
-        private readonly UserService _userService;
-        public ProjectService(IFundRaisingDbContext _db) // UserService _us)
+        //private readonly UserService _userService;
+        public ProjectService(IFundRaisingDbContext _db)//, UserService _us)
         {
             _dbContext = _db;
             //_userService = _us;
@@ -36,7 +36,7 @@ namespace FundRaising.Core.Services
 
                 TargetFund = _projectOptions.TargetFund,
 
-                User = _dbContext.Users.Find(_userOptions.UserId)
+                CreatorId = _userOptions.UserId
              };
 
              _dbContext.Projects.Add(_newProject);
@@ -48,7 +48,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _newProject.ProjectId,
 
-                //User.UserId = _newProject.User.UserId, //Creators id
+                CreatorId = _newProject.CreatorId,
 
                 Title = _newProject.Title,
 
@@ -69,7 +69,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = project.ProjectId,
 
-                //CreatorId = project.CreatorId,
+                CreatorId = project.CreatorId,
 
                 Title = project.Title,
 
@@ -96,7 +96,7 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _project.ProjectId,
 
-                //CreatorId = _project.CreatorId,
+                CreatorId = _project.CreatorId,
 
                 Title = _project.Title,
 
