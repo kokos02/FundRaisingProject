@@ -12,8 +12,8 @@ namespace FundRaising.Core.Services
 {
     public class RewardService : IRewardService
     {
-        private readonly FundRaisingDbContext _dbContext;
-        public RewardService(FundRaisingDbContext _db)
+        private readonly IFundRaisingDbContext _dbContext;
+        public RewardService(IFundRaisingDbContext _db)
         {
             _dbContext = _db;
         }

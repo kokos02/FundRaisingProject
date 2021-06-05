@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FundRaising.Core.Interfaces
 {
-    interface IRewardService
+    public interface IRewardService
     {
         public RewardOptions CreateReward(RewardOptions _rewardOptions);
         public List<RewardOptions> GetAllRewards();

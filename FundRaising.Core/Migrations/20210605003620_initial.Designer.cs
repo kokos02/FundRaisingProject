@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundRaising.Core.Migrations
 {
     [DbContext(typeof(FundRaisingDbContext))]
-    [Migration("20210530221326_initial")]
+    [Migration("20210605003620_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,28 @@ namespace FundRaising.Core.Migrations
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("FundRaising.Core.Models.Fund", b =>
+                {
+                    b.Property<int>("FundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FundId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Funds");
+                });
+
             modelBuilder.Entity("FundRaising.Core.Models.Project", b =>
                 {
                     b.Property<int>("ProjectId")
@@ -30,9 +52,6 @@ namespace FundRaising.Core.Migrations
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("CurrentFund")
                         .HasColumnType("decimal(18,2)");
@@ -72,7 +91,10 @@ namespace FundRaising.Core.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectId")
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -98,6 +120,9 @@ namespace FundRaising.Core.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,20 +131,37 @@ namespace FundRaising.Core.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("FundRaising.Core.Models.Fund", b =>
+                {
+                    b.HasOne("FundRaising.Core.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("FundRaising.Core.Models.User", "User")
+                        .WithMany("FundedProjects")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FundRaising.Core.Models.Project", b =>
                 {
-                    b.HasOne("FundRaising.Core.Models.User", null)
-                        .WithMany("Projects")
+                    b.HasOne("FundRaising.Core.Models.User", "User")
+                        .WithMany("CreatedProjects")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FundRaising.Core.Models.Reward", b =>
                 {
-                    b.HasOne("FundRaising.Core.Models.Project", null)
+                    b.HasOne("FundRaising.Core.Models.Project", "Project")
                         .WithMany("AvailableRewards")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("FundRaising.Core.Models.Project", b =>
@@ -129,7 +171,9 @@ namespace FundRaising.Core.Migrations
 
             modelBuilder.Entity("FundRaising.Core.Models.User", b =>
                 {
-                    b.Navigation("Projects");
+                    b.Navigation("CreatedProjects");
+
+                    b.Navigation("FundedProjects");
                 });
 #pragma warning restore 612, 618
         }

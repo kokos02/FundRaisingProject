@@ -12,8 +12,8 @@ namespace FundRaising.Core.Services
 {
     public class FundService : IFundService
     {
-        private readonly FundRaisingDbContext _dbContext;
-        public FundService(FundRaisingDbContext _db)
+        private readonly IFundRaisingDbContext _dbContext;
+        public FundService(IFundRaisingDbContext _db)
         {
             _dbContext = _db;
         }

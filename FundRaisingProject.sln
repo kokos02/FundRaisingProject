@@ -5,12 +5,10 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundRaising.Core", "FundRaising.Core\FundRaising.Core.csproj", "{67E0092F-34A7-44EE-AC71-F17655E13E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FundRaising.Web", "FundRaising.Web\FundRaising.Web.csproj", "{801B96DC-5F26-4B81-AADB-6728BADA2E3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundRaising.Web", "FundRaising.Web\FundRaising.Web.csproj", "{801B96DC-5F26-4B81-AADB-6728BADA2E3D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{67E0092F-34A7-44EE-AC71-F17655E13E7F} = {67E0092F-34A7-44EE-AC71-F17655E13E7F}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2068AEC6-7811-48DA-9BBE-6F4AB7729C25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +24,6 @@ Global
 		{801B96DC-5F26-4B81-AADB-6728BADA2E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{801B96DC-5F26-4B81-AADB-6728BADA2E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{801B96DC-5F26-4B81-AADB-6728BADA2E3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2068AEC6-7811-48DA-9BBE-6F4AB7729C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2068AEC6-7811-48DA-9BBE-6F4AB7729C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2068AEC6-7811-48DA-9BBE-6F4AB7729C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2068AEC6-7811-48DA-9BBE-6F4AB7729C25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

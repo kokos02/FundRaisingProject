@@ -12,10 +12,12 @@ namespace FundRaising.Core.Services
 {
     public class ProjectService : IProjectService
     {
-        private readonly FundRaisingDbContext _dbContext;
-        public ProjectService(FundRaisingDbContext _db)
+        private readonly IFundRaisingDbContext _dbContext;
+        private readonly UserService _userService;
+        public ProjectService(IFundRaisingDbContext _db) // UserService _us)
         {
             _dbContext = _db;
+            //_userService = _us;
         }
         
             

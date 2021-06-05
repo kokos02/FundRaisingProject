@@ -11,19 +11,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            FundRaisingDbContext db = new();
-
-            UserOptions aa = new()
-            {
-                Username = "aaaa"
-            };
-
-            ProjectOptions bb = new()
-            {
-                Title = "bbb"
-            };
-
-            IProjectService newProject = new ProjectService(db);
+            
 
             
         }

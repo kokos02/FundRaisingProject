@@ -2,6 +2,7 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Models;
 using FundRaising.Core.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,99 +13,171 @@ namespace FundRaising.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly FundRaisingDbContext _dbContext;
-        public UserService(FundRaisingDbContext _db)
+        private readonly IFundRaisingDbContext _dbContext;
+        private readonly ILogger<UserService> _logger;
+        public UserService(IFundRaisingDbContext db)
         {
-            _dbContext = _db;
+            _dbContext = db;
         }
-        public UserOptions CreateUser(UserOptions _userOptions)
+        public Result<User> CreateUser(UserOptions _userOptions)
         {
-            User _newUser = new()
+            if (_userOptions == null)
+            {
+                return new Result<User>(ErrorCode.BadRequest, "Null options.");
+            }
+
+            if (string.IsNullOrWhiteSpace(_userOptions.Username) ||
+              string.IsNullOrWhiteSpace(_userOptions.Email) ||
+              string.IsNullOrWhiteSpace(_userOptions.Password))
+            {
+                return new Result<User>(ErrorCode.BadRequest, "Not all required user options provided.");
+            }
+
+            var _userWithSameUsername = _dbContext.Users.SingleOrDefault(user => user.Username == _userOptions.Username);
+
+            if (_userWithSameUsername != null)
+            {
+                return new Result<User>(ErrorCode.Conflict, $"Customer with #{_userOptions.Username} already exists.");
+            }
+
+            var _newUser = new User
             {
                 Username = _userOptions.Username,
-
-                Email = _userOptions.Email
+                Email = _userOptions.Email,
+                Password = _userOptions.Password
             };
 
-            _dbContext.Users.Add(_newUser);
+             _dbContext.Users.Add(_newUser);
 
-            _dbContext.SaveChanges();
-
-            return new UserOptions
+            try
             {
-                UserId = _newUser.UserId,
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
 
-                Username = _newUser.Username,
+                return new Result<User>(ErrorCode.InternalServerError, "Could not save user.");
+            }
 
-                Email = _newUser.Email
+            return new Result<User>
+            {
+                Data = _newUser
+            };
+        }
+
+
+
+        public Result<List<User>> GetAllUsers()
+        {
+            // List<User> _users = _dbContext.Users.ToList();
+
+            // List<UserOptions> _userOptions = new();
+
+            // _users.ForEach(user => _userOptions.Add(new UserOptions()
+            //{
+            //   UserId = user.UserId,
+
+            //  Username = user.Username,
+
+            // Email = user.Email
+
+            //}));
+
+            var users =  _dbContext.Users.ToList();
+
+            return new Result<List<User>>
+            {
+                Data = users.Count > 0 ? users : new List<User>()
             };
 
         }
 
-
-        public List<UserOptions> GetAllUsers()
+        public Result<User> GetUserById(int _userId)
         {
-            List<User> _users = _dbContext.Users.ToList();
+            //User _user = _dbContext.Users.Find(_userId);
 
-            List<UserOptions> _userOptions = new();
+            //UserOptions _userOptions = new()
+            //{
+            // UserId = _user.UserId,
 
-            _users.ForEach(user => _userOptions.Add(new UserOptions()
+            // Username = _user.Username,
+
+            //Email = _user.Email
+
+            //};
+
+            //return _userOptions;
+            if (_userId <= 0)
             {
-                UserId = user.UserId,
+                return new Result<User>(ErrorCode.BadRequest, "Id cannot be less than or equal to zero.");
+            }
 
-                Username = user.Username,
+            var user =  _dbContext
+                .Users
+                .SingleOrDefault(user => user.UserId == _userId);
 
-                Email = user.Email
-
-            }));
-
-
-            return _userOptions;
-        }
-
-        public UserOptions GetUserById(int _userId)
-        {
-            User _user = _dbContext.Users.Find(_userId);
-
-            UserOptions _userOptions = new()
+            if (user == null)
             {
-                UserId = _user.UserId,
+                return new Result<User>(ErrorCode.NotFound, $"Customer with id #{_userId} not found.");
+            }
 
-                Username = _user.Username,
-
-                Email = _user.Email
-
+            return new Result<User>
+            {
+                Data = user
             };
 
-            return _userOptions;
-
         }
+        //UpdateUser
+        //public bool UpdateUser(int _userId, UserOptions _userOptions)
+        //{
+         //   if (_userOptions == null) return false;
 
-        public bool UpdateUser(int _userId, UserOptions _userOptions)
+          //  User _user = _dbContext.Users.FirstOrDefault(user => user.UserId == _userId);
+
+          //  _user.Username = _userOptions.Username;
+
+          //  _user.Email = _userOptions.Email;
+
+          //  _dbContext.SaveChanges();
+
+         //   return true;
+
+       // }
+
+        public Result<int> DeleteUser(int _userId)
         {
-            if (_userOptions == null) return false;
+            //User _user = _dbContext.Users.Find(_userId);
 
-            User _user = _dbContext.Users.FirstOrDefault(user => user.UserId == _userId);
+            //if (_user == null) return false;
 
-            _user.Username = _userOptions.Username;
+            //_dbContext.Users.Remove(_user);
 
-            _user.Email = _userOptions.Email;
+            //return true;
+            var userToDelete = GetUserById(_userId);
 
-            _dbContext.SaveChanges();
+            if (userToDelete.Error != null || userToDelete.Data == null)
+            {
+                return new Result<int>(ErrorCode.NotFound, $"User with id #{_userId} not found.");
+            }
 
-            return true;
+            _dbContext.Users.Remove(userToDelete.Data);
 
-        }
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
 
-        public bool DeleteUser(int _userId)
-        {
-            User _user = _dbContext.Users.Find(_userId);
+                return new Result<int>(ErrorCode.InternalServerError, "Could not delete customer.");
+            }
 
-            if (_user == null) return false;
-
-            _dbContext.Users.Remove(_user);
-
-            return true;
+            return new Result<int>
+            {
+                Data = _userId
+            };
 
         }
     }
