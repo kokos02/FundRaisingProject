@@ -13,30 +13,40 @@ namespace FundRaising.Core.Services
     public class ProjectService : IProjectService
     {
         private readonly IFundRaisingDbContext _dbContext;
-        //private readonly UserService _userService;
+        //private readonly ILogger<ProjectService> _projectService;
+        private readonly IProjectService _projectService;
+
         public ProjectService(IFundRaisingDbContext _db)//, UserService _us)
         {
             _dbContext = _db;
-            //_userService = _us;
+            _projectService = projectservice;
         }
         
-            
-        public ProjectOptions CreateProject(ProjectOptions _projectOptions, UserOptions _userOptions)
+        public Result<Project> CreateProject(ProjectOptions _projectOptions)    
         {
             //validation
-             Project _newProject = new()
-             {
-                Title = _projectOptions.Title,
+            if (_projectOptions == null)
+            {
+                return new Result<Project>(ErrorCode.BadRequest, "Null options.");
+            }
 
-                Description = _projectOptions.Description,
+            if (string.IsNullOrWhiteSpace(_projectOptions.Title) ||
+                string.IsNullOrWhiteSpace(_projectOptions.Description) ||
+                string.IsNullOrWhiteSpace(_projectOptions.Category) ||
+                //Deadline validation
+                _projectOptions.TargetFund < = 0)
+            {
+                return new Result<Project>(ErrorCode.BadRequest, "Not all required project options provided")
+            }
 
-                ProjectCategory = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), _projectOptions.Category),
+            var projectWithSameTitle = _dbContext.Projects.SingleOrDefault(project => project.Title == _projectOptions.Title);
 
-                Deadline = _projectOptions.Deadline,
+            if (projectWithSameTitle != null)
+            {
+                return new Result<Project>(ErrorCode.Conflict, $"Project named #{_projectOptions.Title} already exists.");
+            }
 
-                TargetFund = _projectOptions.TargetFund,
 
-                CreatorId = _userOptions.UserId
              };
 
              _dbContext.Projects.Add(_newProject);
@@ -59,7 +69,7 @@ namespace FundRaising.Core.Services
         }
 
 
-        public List<ProjectOptions> GetAllProjects()
+        public Result<List<ProjectOptions>> GetAllProjects()
         {
             List<Project> _projects = _dbContext.Projects.ToList();
 
@@ -67,7 +77,7 @@ namespace FundRaising.Core.Services
 
             _projects.ForEach(project => _projectOptions.Add(new ProjectOptions()
             {
-                ProjectId = project.ProjectId,
+                ProjectdId = project.ProjectdId,
 
                 CreatorId = project.CreatorId,
 
@@ -75,74 +85,145 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                Category = project.ProjectCategory.ToString(),
+                Catregory = project.Category,
 
                 Deadline = project.Deadline,
+
+                CurrentFund = project.CurrentFund,
 
                 TargetFund = project.TargetFund
 
             }));
 
-
-            return _projectOptions;
-
+            return new Result<List<ProjectOptions>>
+            {
+                Data = _projectOptions
+            };
         }
 
-        public ProjectOptions GetProjectById(int _projectId)
+           public Result<ProjectdOptions> GetProjectdById(int _projectId)
         {
-            Project _project = _dbContext.Projects.Find(_projectId);
+            if (_projectId <= 0)
+            {
+                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
+            }
+
+            var project =  _dbContext.Projects
+               .SingleOrDefault(rew => rew.ProjectId == _projectId);
+
+            if (project == null)
+            {
+                return new Result<ProjectOptions>(ErrorCode.NotFound, $"Project with id #{_projectId} not found.");
+            }            
 
             ProjectOptions _projectOptions = new()
             {
-                ProjectId = _project.ProjectId,
+                 ProjectdId = project.ProjectdId,
 
-                CreatorId = _project.CreatorId,
+                CreatorId = project.CreatorId,
 
-                Title = _project.Title,
+                Title = project.Title,
 
-                Description = _project.Description,
+                Description = project.Description,
 
-                Category =  _project.ProjectCategory.ToString(),
+                Catregory = project.Category,
 
-                Deadline = _project.Deadline,
+                Deadline = project.Deadline,
 
-                TargetFund = _project.TargetFund
+                CurrentFund = project.CurrentFund,
 
+                TargetFund = project.TargetFund
             };
 
-            return _projectOptions;
+            return new Result<ProjectOptions>
+            {
+                Data = _projectoptions
+            };
         }
 
-        public bool UpdateProject(int _projectId, ProjectOptions _projectOptions)
+        
+        public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions)
         {
-            if (_projectOptions == null) return false;
+            if (_projectOptions == null)
+            {
+                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Null options.");
+            }
 
-            Project _project = _dbContext.Projects.FirstOrDefault(project => project.ProjectId == _projectId);
+            if (_projectId <= 0)
+            {
+                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
+            }
 
-            _project.Title = _projectOptions.Title;
+            var project = _dbContext.Projects
+               .SingleOrDefault(rew => rew.ProjectId == _ProjectId);
 
-            _project.Description = _projectOptions.Description;
+            if (project == null)
+            {
+                return new Result<ProjectOptions>(ErrorCode.NotFound, $"Project with id #{_projectId} not found.");
+            }
 
-            _project.ProjectCategory = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), _projectOptions.Category);
+            if (_projectOptions.CurrentFund <= 0)
+            {
+                return new Result<ProjeOptions>(ErrorCode.BadRequest, "Not all required project options provided correctly.");
+            }
 
-            _project.Deadline = _projectOptions.Deadline;
-
-            _project.TargetFund = _projectOptions.TargetFund;
+            project.CurrentFund += _projectOptions.CurrentFund; 
 
             _dbContext.SaveChanges();
 
-            return true;
+            ProjectOptions projectOptions = new()
+            {
+                ProjectdId = project.ProjectdId,
+
+                CreatorId = project.CreatorId,
+
+                Title = project.Title,
+
+                Description = project.Description,
+
+                Catregory = project.Category,
+
+                Deadline = project.Deadline,
+
+                CurrentFund = project.CurrentFund,
+
+                TargetFund = project.TargetFund
+
+            };
+
+            return new Result<ProjectOptions>
+            {
+                Data = projectOptions
+            };
         }
 
-        public bool DeleteProject(int _projectId)
+        public Result<int> DeleteProject(int _projectId)
         {
-            Project _project = _dbContext.Projects.Find(_projectId);
+           var projectToDelete = _dbContext.Projects.SingleOrDefault(project.ProjectId == _projectId);
 
-            if (_project == null) return false;
+            if (projectToDelete == null)
+            {
+                return new Result<int>(ErrorCOde.NotFound, $"Project with id #{_projectId} not found");
+            }
 
-            _dbContext.Projects.Remove(_project);
+            _dbContext.Projects.Remove(projectToDelete);
 
-            return true;
+            try
+            {
+                _dbContext.SaveChanges();
+
+            }
+
+             catch
+            {
+                return new Result<int>(ErrorCode.InternalServerError, "Could not delete Project");
+            }
+            
+            return new Result<int>
+            {
+                Data = _projectId
+            };
         }
     }
 }
+

@@ -9,10 +9,10 @@ namespace FundRaising.Core.Interfaces
 {
     public interface IProjectService
     {
-        public ProjectOptions CreateProject(ProjectOptions _projectOptions, UserOptions _userOptions);
-        public List<ProjectOptions> GetAllProjects();
-        public ProjectOptions GetProjectById(int _projectId);
-        public bool UpdateProject(int _projectId, ProjectOptions _projectOptions);
-        public bool DeleteProject(int _projectId);
+        public Result<Project> CreateProject(ProjectOptions _projectOptions);
+        public Result<List<ProjectOptions>> GetAllProjects();
+        public Result<ProjectdOptions> GetProjectdById(int _projectId);
+        public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions);
+        public Result<int> DeleteProject(int _projectId);
     }
 }
