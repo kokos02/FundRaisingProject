@@ -16,10 +16,10 @@ namespace FundRaising.Core.Services
         //private readonly ILogger<ProjectService> _projectService;
         private readonly IProjectService _projectService;
 
-        public ProjectService(IFundRaisingDbContext _db)//, UserService _us)
+        public ProjectService(IFundRaisingDbContext _db, IUserService _us)
         {
             _dbContext = _db;
-            _projectService = projectservice;
+            //_projectService = projectservice;
         }
         
         public Result<Project> CreateProject(ProjectOptions _projectOptions)    
@@ -32,11 +32,11 @@ namespace FundRaising.Core.Services
 
             if (string.IsNullOrWhiteSpace(_projectOptions.Title) ||
                 string.IsNullOrWhiteSpace(_projectOptions.Description) ||
-                string.IsNullOrWhiteSpace(_projectOptions.Category) ||
+                string.IsNullOrWhiteSpace(_projectOptions.ProjectCategory) ||
                 //Deadline validation
-                _projectOptions.TargetFund < = 0)
+                _projectOptions.TargetFund <= 0)
             {
-                return new Result<Project>(ErrorCode.BadRequest, "Not all required project options provided")
+                return new Result<Project>(ErrorCode.BadRequest, "Not all required project options provided");
             }
 
             var projectWithSameTitle = _dbContext.Projects.SingleOrDefault(project => project.Title == _projectOptions.Title);
@@ -45,28 +45,39 @@ namespace FundRaising.Core.Services
             {
                 return new Result<Project>(ErrorCode.Conflict, $"Project named #{_projectOptions.Title} already exists.");
             }
+                    
+                                 
 
-
-             };
-
-             _dbContext.Projects.Add(_newProject);
-
-             _dbContext.SaveChanges();
-
-
-            return new ProjectOptions
+            Project _newProject = new()
             {
-                ProjectId = _newProject.ProjectId,
+                ProjectId = _projectOptions.ProjectId,
 
-                CreatorId = _newProject.CreatorId,
+                CreatorId = _projectOptions.CreatorId,
 
-                Title = _newProject.Title,
+                Title = _projectOptions.Title,
 
-                Description = _newProject.Description,
+                Description = _projectOptions.Description,
                 
-                TargetFund = _newProject.TargetFund
+                TargetFund = _projectOptions.TargetFund
             };
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch
+            {
+                return new Result<Project>(ErrorCode.InternalServerError, "Could not save user.");
+            }
+
+            return new Result<Project>
+            {
+                Data = _newProject
+            };
+
         }
+    
+
+
 
 
         public Result<List<ProjectOptions>> GetAllProjects()
@@ -77,7 +88,7 @@ namespace FundRaising.Core.Services
 
             _projects.ForEach(project => _projectOptions.Add(new ProjectOptions()
             {
-                ProjectdId = project.ProjectdId,
+                ProjectId = project.ProjectId,
 
                 CreatorId = project.CreatorId,
 
@@ -85,7 +96,7 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                Catregory = project.Category,
+                //ProjectCategory = project.ProjectCategory,
 
                 Deadline = project.Deadline,
 
@@ -101,7 +112,7 @@ namespace FundRaising.Core.Services
             };
         }
 
-           public Result<ProjectdOptions> GetProjectdById(int _projectId)
+           public Result<ProjectOptions> GetProjectdById(int _projectId)
         {
             if (_projectId <= 0)
             {
@@ -118,7 +129,7 @@ namespace FundRaising.Core.Services
 
             ProjectOptions _projectOptions = new()
             {
-                 ProjectdId = project.ProjectdId,
+                 ProjectId = project.ProjectId,
 
                 CreatorId = project.CreatorId,
 
@@ -126,7 +137,7 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                Catregory = project.Category,
+                //ProjectCategory = project.ProjectCategory,
 
                 Deadline = project.Deadline,
 
@@ -137,7 +148,7 @@ namespace FundRaising.Core.Services
 
             return new Result<ProjectOptions>
             {
-                Data = _projectoptions
+                Data = _projectOptions
             };
         }
 
@@ -155,7 +166,7 @@ namespace FundRaising.Core.Services
             }
 
             var project = _dbContext.Projects
-               .SingleOrDefault(rew => rew.ProjectId == _ProjectId);
+               .SingleOrDefault(rew => rew.ProjectId == _projectId);
 
             if (project == null)
             {
@@ -164,7 +175,7 @@ namespace FundRaising.Core.Services
 
             if (_projectOptions.CurrentFund <= 0)
             {
-                return new Result<ProjeOptions>(ErrorCode.BadRequest, "Not all required project options provided correctly.");
+                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Not all required project options provided correctly.");
             }
 
             project.CurrentFund += _projectOptions.CurrentFund; 
@@ -173,7 +184,7 @@ namespace FundRaising.Core.Services
 
             ProjectOptions projectOptions = new()
             {
-                ProjectdId = project.ProjectdId,
+                ProjectId = project.ProjectId,
 
                 CreatorId = project.CreatorId,
 
@@ -181,7 +192,7 @@ namespace FundRaising.Core.Services
 
                 Description = project.Description,
 
-                Catregory = project.Category,
+                //ProjectCategory = project.ProjectCategory,
 
                 Deadline = project.Deadline,
 
@@ -199,11 +210,11 @@ namespace FundRaising.Core.Services
 
         public Result<int> DeleteProject(int _projectId)
         {
-           var projectToDelete = _dbContext.Projects.SingleOrDefault(project.ProjectId == _projectId);
+           var projectToDelete = _dbContext.Projects.SingleOrDefault(project => project.ProjectId == _projectId);
 
             if (projectToDelete == null)
             {
-                return new Result<int>(ErrorCOde.NotFound, $"Project with id #{_projectId} not found");
+                return new Result<int>(ErrorCode.NotFound, $"Project with id #{_projectId} not found");
             }
 
             _dbContext.Projects.Remove(projectToDelete);

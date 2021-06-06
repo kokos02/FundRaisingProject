@@ -1,4 +1,5 @@
-﻿using FundRaising.Core.Options;
+﻿using FundRaising.Core.Models;
+using FundRaising.Core.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,10 @@ namespace FundRaising.Core.Interfaces
     {
         public Result<Project> CreateProject(ProjectOptions _projectOptions);
         public Result<List<ProjectOptions>> GetAllProjects();
-        public Result<ProjectdOptions> GetProjectdById(int _projectId);
+        public Result<ProjectOptions> GetProjectdById(int _projectId);
         public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions);
         public Result<int> DeleteProject(int _projectId);
+
+
     }
 }
