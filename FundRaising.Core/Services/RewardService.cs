@@ -30,8 +30,6 @@ namespace FundRaising.Core.Services
 
             if (string.IsNullOrWhiteSpace(_rewardOptions.Title) ||
               string.IsNullOrWhiteSpace(_rewardOptions.Description) ||
-              _rewardOptions.ProjectId < 0 ||
-              _rewardOptions.RewardId < 0 ||
               _rewardOptions.Price <= 0)
             {
                 return new Result<Reward>(ErrorCode.BadRequest, "Not all required user options provided correctly.");
