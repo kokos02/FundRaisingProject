@@ -71,23 +71,26 @@ namespace FundRaising.Core.Services
         {
             List<Reward> _rewards = _dbContext.Rewards.ToList();
 
-           // List<Reward> _rewards = new();
+            List<RewardOptions> _rewardOptions = new();
 
-            //_rewards.ForEach(reward => _rewards.Add(new RewardOptions()
-            //{
-            //    RewardId = reward.RewardId,
+            _rewards.ForEach(reward => _rewardOptions.Add(new RewardOptions()
+            {
+                RewardId = reward.RewardId,
 
-            //    ProjectId = reward.ProjectId,
+                ProjectId = reward.ProjectId,
 
-            //    Title = reward.Title,
+                Title = reward.Title,
 
-            //    Description = reward.Description,
+                Description = reward.Description,
 
-            //    Price = reward.Price
+                Price = reward.Price
 
-            //}));
+            }));
 
-            return _rewardOptions;
+            return new Result<List<RewardOptions>>
+            {
+                Data = _rewardOptions
+            };
         }
 
         public Result<RewardOptions> GetRewardById(int _rewardId)
