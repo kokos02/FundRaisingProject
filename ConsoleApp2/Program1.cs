@@ -10,9 +10,10 @@ namespace ConsoleApp2
 {
     public class Program1
     {
+        
         public static void Main(string[] args)
         {
-            IFundRaisingDbContext db = new FundRaisingDbContext();
+            
             
             Console.WriteLine("Hello World!");
             var user = new User();
