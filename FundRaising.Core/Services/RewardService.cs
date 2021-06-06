@@ -2,6 +2,7 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Models;
 using FundRaising.Core.Options;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace FundRaising.Core.Services
     {
         private readonly IFundRaisingDbContext _dbContext;
         private readonly IProjectService _projectService;
-        
+
         public RewardService(IFundRaisingDbContext _db, IProjectService projectservice)
         {
             _dbContext = _db;
@@ -29,7 +30,9 @@ namespace FundRaising.Core.Services
 
             if (string.IsNullOrWhiteSpace(_rewardOptions.Title) ||
               string.IsNullOrWhiteSpace(_rewardOptions.Description) ||
-              _rewardOptions.Price <=0)
+              _rewardOptions.ProjectId < 0 ||
+              _rewardOptions.RewardId < 0 ||
+              _rewardOptions.Price <= 0)
             {
                 return new Result<Reward>(ErrorCode.BadRequest, "Not all required user options provided correctly.");
             }
@@ -45,11 +48,8 @@ namespace FundRaising.Core.Services
             {
                 ProjectId = _rewardOptions.ProjectId,
                 Title = _rewardOptions.Title,
-
                 Description = _rewardOptions.Description,
-
                 Price = _rewardOptions.Price
-
             };
 
             _dbContext.Rewards.Add(_newReward);
@@ -57,7 +57,7 @@ namespace FundRaising.Core.Services
             {
                 _dbContext.SaveChanges();
             }
-            catch 
+            catch
             {
                 return new Result<Reward>(ErrorCode.InternalServerError, "Could not save user.");
             }
@@ -69,11 +69,7 @@ namespace FundRaising.Core.Services
 
         }
 
-
-            
-
-        
-        public bool GetAllRewards()
+        public Result<List<RewardOptions>> GetAllRewards()
         {
             List<Reward> _rewards = _dbContext.Rewards.ToList();
 
@@ -93,56 +89,116 @@ namespace FundRaising.Core.Services
 
             //}));
 
-            //return _rewardOptions;
-            return true;
-        }
-
-        public RewardOptions GetRewardById(int _rewardId)
-        {
-            Reward _reward = _dbContext.Rewards.Find(_rewardId);
-
-            RewardOptions _rewardOptions = new()
-            {
-                RewardId = _reward.RewardId,
-
-                ProjectId = _reward.ProjectId,
-
-                Title = _reward.Title,
-
-                Description = _reward.Description,
-
-                Price = _reward.Price
-            };
-
             return _rewardOptions;
         }
 
-        public bool UpdateReward(int _rewardId, RewardOptions _rewardOptions)
+        public Result<RewardOptions> GetRewardById(int _rewardId)
         {
-            if (_rewardOptions == null) return false;
+            if (_rewardId <= 0)
+            {
+                return new Result<RewardOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
+            }
 
-            Reward _reward = _dbContext.Rewards.FirstOrDefault(reward => reward.RewardId == _rewardId);
+            var reward =  _dbContext.Rewards
+               .SingleOrDefault(rew => rew.RewardId == _rewardId);
 
-            _reward.Title = _rewardOptions.Title;
+            if (reward == null)
+            {
+                return new Result<RewardOptions>(ErrorCode.NotFound, $"Reward with id #{_rewardId} not found.");
+            }            
 
-            _reward.Description = _rewardOptions.Description;
+            RewardOptions _rewardOptions = new()
+            {
+                RewardId = reward.RewardId,
 
-            _reward.Price = _rewardOptions.Price;
+                ProjectId = reward.ProjectId,
+
+                Title = reward.Title,
+
+                Description = reward.Description,
+
+                Price = reward.Price
+            };
+
+            return new Result<RewardOptions>
+            {
+                Data = _rewardOptions
+            };
+        }
+
+        public Result<RewardOptions> UpdateReward(int _rewardId, RewardOptions _rewardOptions)
+        {
+            if (_rewardOptions == null)
+            {
+                return new Result<RewardOptions>(ErrorCode.BadRequest, "Null options.");
+            }
+
+            if (_rewardId <= 0)
+            {
+                return new Result<RewardOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
+            }
+
+            var reward = _dbContext.Rewards
+               .SingleOrDefault(rew => rew.RewardId == _rewardId);
+
+            if (reward == null)
+            {
+                return new Result<RewardOptions>(ErrorCode.NotFound, $"Reward with id #{_rewardId} not found.");
+            }
+
+            if (_rewardOptions.Price <= 0)
+            {
+                return new Result<RewardOptions>(ErrorCode.BadRequest, "Not all required user options provided correctly.");
+            }
+
+            reward.Price += _rewardOptions.Price; // Only Price????
 
             _dbContext.SaveChanges();
 
-            return true;
+            RewardOptions rewardOptions = new()
+            {
+                RewardId = reward.RewardId,
+
+                ProjectId = reward.ProjectId,
+
+                Title = reward.Title,
+
+                Description = reward.Description,
+
+                Price = reward.Price
+            };
+
+            return new Result<RewardOptions>
+            {
+                Data = rewardOptions
+            };
         }
 
-        public bool DeleteReward(int _rewardId)
+        public Result<int> DeleteReward(int _rewardId)
         {
-            Reward _reward = _dbContext.Rewards.Find(_rewardId);
+            var rewardToDelete = _dbContext.Rewards
+                 .SingleOrDefault(rew => rew.RewardId == _rewardId);
 
-            if (_reward == null) return false;
+            if (rewardToDelete == null)
+            {
+                return new Result<int>(ErrorCode.NotFound, $"Reward with id #{_rewardId} not found.");
+            }
 
-            _dbContext.Rewards.Remove(_reward);
+            _dbContext.Rewards.Remove(rewardToDelete);
 
-            return true;
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch
+            {
+                return new Result<int>(ErrorCode.InternalServerError, "Could not delete Reward.");
+            }
+
+            return new Result<int>
+            {
+                Data = _rewardId
+            };
         }
     }
 }

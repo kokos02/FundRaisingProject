@@ -11,9 +11,9 @@ namespace FundRaising.Core.Interfaces
     public interface IRewardService
     {
         public Result<Reward> CreateReward(RewardOptions _rewardOptions);
-        public bool GetAllRewards();
-        public RewardOptions GetRewardById(int _rewardId);
-        public bool UpdateReward(int _rewardId, RewardOptions _rewardOptions);
-        public bool DeleteReward(int _rewardId);
+        public Result<List<RewardOptions>> GetAllRewards();
+        public Result<RewardOptions> GetRewardById(int _rewardId);
+        public Result<RewardOptions> UpdateReward(int _rewardId, RewardOptions _rewardOptions);
+        public Result<int> DeleteReward(int _rewardId);
     }
 }
