@@ -33,7 +33,14 @@ namespace FundRaising.Core.Services
                 return Result<Project>.ServiceFailed(StatusCode.NotFound, $"User with Id: {options.CreatorId} was not found");
             }
 
-            var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.Category, true);
+            if(options.ProjectCategory == "7")
+            {
+                return Result<Project>.ServiceFailed(StatusCode.BadRequest, "You have to choose a category");
+            }
+            
+            var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.ProjectCategory, true);
+           
+            
 
             var project = new Project
             {
@@ -189,12 +196,11 @@ namespace FundRaising.Core.Services
             return Result<bool>.ServiceSuccessful(true);
         }
 
-
-
-
-
-
-
+        public IQueryable<Project> SearchProject(int rewardId)
+        {
+            
+            throw new NotImplementedException();
+        }
     }
 }
 

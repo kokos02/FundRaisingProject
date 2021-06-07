@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FundRaising.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace FundRaising.Core.Options
         public int CreatorId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Category { get; set; }
+        public string ProjectCategory { get; set; }
         public DateTime Deadline { get; set; }
         public decimal TargetFund { get; set; }
     }

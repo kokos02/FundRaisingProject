@@ -8,11 +8,11 @@ namespace FundRaising.Core.Models
 {
     public enum ProjectCategory
     {
-        Art=0,
-        Comics=1,
-        Design=2,
-        Fashion=3,
-        Photography=4,
-        Technology=5
+        Art=1,
+        Comics=2,
+        Design=3,
+        Fashion=4,
+        Photography=5,
+        Technology=6
     }
 }

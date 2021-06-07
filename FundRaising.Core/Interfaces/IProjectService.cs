@@ -19,6 +19,8 @@ namespace FundRaising.Core.Interfaces
         //public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions);
         public Result<bool> DeleteProject(int projectId);
 
+        public IQueryable<Project> SearchProject(int rewardId);
+
 
     }
 }
