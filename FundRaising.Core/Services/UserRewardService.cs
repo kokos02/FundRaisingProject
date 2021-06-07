@@ -91,6 +91,17 @@ namespace FundRaising.Core.Services
 
             return Result<UserReward>.ServiceSuccessful(userReward);
         }
+
+        public Result<List<UserReward>> GetAllUserRewards()
+        {
+            List<UserReward> userrewards = db.UserRewards.ToList();
+
+            return new Result<List<UserReward>>
+            {
+                Data = userrewards
+            };
+        }
+
     }
 }
             
