@@ -33,14 +33,14 @@ namespace FundRaising.Core.Services
                 return Result<Project>.ServiceFailed(StatusCode.NotFound, $"User with Id: {options.CreatorId} was not found");
             }
 
-            //var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.Category, true);
+            var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.Category, true);
 
             var project = new Project
             {
                 CreatorId = options.CreatorId,
                 Title = options.Title,
                 Description = options.Description,
-                //Category = categ,
+                ProjectCategory = categ,
                 Deadline = options.Deadline,
                 TargetFund = options.TargetFund
             };

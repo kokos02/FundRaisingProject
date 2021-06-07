@@ -20,31 +20,35 @@ namespace ConsoleApp2
             IRewardService rewardservice = new RewardService(db, projectservice);
             IUserRewardService userrewardservice = new UserRewardService(db, userservice, projectservice, rewardservice);
 
-            //var newuser = new CreateUserOptions
-            //{
-            //    Username = "nikos",
-            //    Email = "nikos@gmail.com",
-            //    Password = "12345",
+            var newuser = new CreateUserOptions
+            {
+                Username = "nikos",
+                Email = "nikos@gmail.com",
+                Password = "12345",
 
-            //};
+            };
 
-            //var user = new User();
-            //var newproject = new Project
-            //{
-            //    CreatorId = 1,
-            //    TargetFund = 28383.456m,
-            //    Deadline = DateTime.Parse("2022/8/8"),
 
-            //};
+            var newproject = new CreateProjectOptions
+            {
+                CreatorId = 1,
+                TargetFund = 28383.456m,
+                Deadline = DateTime.Parse("2022/8/8"),
 
-            //userservice.CreateUser(newuser);
-            //projectservice.CreateProject(newproject);
+            };
 
-            //var reward1 = new Reward(); 
-            //var reward2 = new Reward();
+            var user = new User();
+            var project = new Project();
+            project = projectservice.GetProjectById(1).Data;
 
-            //newproject.AvailableRewards.Add(reward1);
-            //newproject.AvailableRewards.Add(reward2);
+            userservice.CreateUser(newuser);
+            projectservice.CreateProject(newproject);
+
+            var reward1 = new Reward();
+            var reward2 = new Reward();
+
+            project.AvailableRewards.Add(reward1);
+            project.AvailableRewards.Add(reward2);
 
 
 
