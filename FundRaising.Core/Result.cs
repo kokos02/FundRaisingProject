@@ -8,43 +8,43 @@ namespace FundRaising.Core
 {
     public class Result<T>
     {
-        public Error Error { get; set; }
         public T Data { get; set; }
-        public Result()
-        {
+        public string ErrorText { get; set; }
+        public StatusCode ErrorCode { get; set; }
+        public bool Exists => ErrorCode == StatusCode.OK;
 
-        }
-        public Result(ErrorCode _errorCode, string _errorText)
+        public static Result<T> ServiceSuccessful(T data)
         {
-            Error = new Error
+            return new Result<T>
             {
-                ErrorCode = _errorCode,
-                Message = _errorText
+                ErrorCode = StatusCode.OK,
+                Data = data
+            };
+        }
+
+        public static Result<T> ServiceFailed(StatusCode code, string text)
+        {
+            return new Result<T>
+            {
+                ErrorCode = code,
+                ErrorText = text
             };
         }
     }
-
-    public class Error
+    public enum StatusCode
     {
-        public ErrorCode ErrorCode { get; set; }
-        public string Message { get; set; }
+        OK = 200,
+        BadRequest = 400,
+        NotFound = 404,
+        InternalServerError = 500
     }
-
-    public enum ErrorCode
-    {
-        Unspecified = 0,
-        NotFound = 1,
-        BadRequest = 2,
-        Conflict = 3,
-        InternalServerError = 4
-    }
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+

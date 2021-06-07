@@ -10,11 +10,13 @@ namespace FundRaising.Core.Interfaces
 {
     public interface IUserService
     {
-        public Result<User> CreateUser(UserOptions _userOptions);
+        public Result<User> CreateUser(CreateUserOptions options);
+        public Result<User> GetUserById(int userId);
         public Result<List<User>> GetAllUsers();
-        public Result<User> GetUserById(int _userId);
-        //public bool UpdateUser(int _userId, UserOptions _userOptions);
-        public Result<int> DeleteUser(int _userId);
-        
+        public Result<bool> DeleteUser(int _userId);
+        Result<bool> UpdateUser(int userId, UserOptions options);
     }
 }
+
+
+

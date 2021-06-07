@@ -9,9 +9,9 @@ namespace FundRaising.Core.Models
 {
     public class UserReward
     {
-        public int UserRewardId { get; set; }
+        public int UserId { get; set; }
+        public int RewardId { get; set; }
         public User User { get; set; }
-        public Project Project { get; set; }
         public Reward Reward { get; set; }
     }
 }

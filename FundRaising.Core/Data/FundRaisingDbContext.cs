@@ -10,21 +10,33 @@ using System.Threading.Tasks;
 
 namespace FundRaising.Core.Data
 {
-    public class FundRaisingDbContext : DbContext, IFundRaisingDbContext
+    public class FundRaisingDbContext : DbContext 
     {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer("Data Source = localhost; Initial Catalog = FundRaisingProject; Integrated Security = true");
+        }
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Reward> Rewards { get; set; }
-        public DbSet<UserReward> UserRewards { get; set; }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Data Source = localhost; Initial Catalog = FundRaising.Core; Integrated Security = true");
-        //}
 
-        public FundRaisingDbContext(DbContextOptions<FundRaisingDbContext> options)
-          : base(options)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder
+                .Entity<UserReward>()
+                .ToTable("UserRewards")
+                .HasKey(c => new { c.RewardId, c.UserId });
         }
+
+
+        //public FundRaisingDbContext(DbContextOptions<FundRaisingDbContext> options)
+        //  : base(options)
+        //{
+        //}
 
         //protected override void OnModelCreating(ModelBuilder builder)
         //{
@@ -32,14 +44,19 @@ namespace FundRaising.Core.Data
 
         //    base.OnModelCreating(builder);
         //}
-        public override int SaveChanges()
-        {
-            return base.SaveChanges();
-        }
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await base.SaveChangesAsync();
-        }
+        //public async Task<int> SaveChangesAsync()
+        //{
+        //    return await base.SaveChangesAsync();
+        //}
+        //public override int SaveChanges()
+        //{
+        //    return base.SaveChanges();
+        //}
+
     }
 }
+
+
+
+

@@ -4,21 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FundRaising.Core.Models
+namespace FundRaising.Core.Options
 {
-    public class Reward
+    public class CreateRewardOptions
     {
-        public int RewardId { get; set; }
         public int ProjectId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public DateTime Created { get; set; }
-        public List<UserReward> UserReward { get; set; }
-
-        public Reward()
-        {
-            Created = DateTime.Now;
-        }
     }
 }

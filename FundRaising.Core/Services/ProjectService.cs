@@ -12,229 +12,188 @@ namespace FundRaising.Core.Services
 {
     public class ProjectService : IProjectService
     {
-        private readonly IFundRaisingDbContext _dbContext;
-        //private readonly ILogger<ProjectService> _projectService;
-        private readonly IProjectService _projectService;
-
-        public ProjectService(IFundRaisingDbContext _db, IUserService _us)
+        private readonly FundRaisingDbContext db;
+        private readonly IUserService userService;
+        public ProjectService(FundRaisingDbContext _db, IUserService _userService)
         {
-            _dbContext = _db;
-            //_projectService = projectservice;
-        }
-        
-        public Result<Project> CreateProject(ProjectOptions _projectOptions)    
-        {
-            //validation
-            if (_projectOptions == null)
-            {
-                return new Result<Project>(ErrorCode.BadRequest, "Null options.");
-            }
-
-            if (string.IsNullOrWhiteSpace(_projectOptions.Title) ||
-                string.IsNullOrWhiteSpace(_projectOptions.Description) ||
-                string.IsNullOrWhiteSpace(_projectOptions.ProjectCategory) ||
-                //Deadline validation
-                _projectOptions.TargetFund <= 0)
-            {
-                return new Result<Project>(ErrorCode.BadRequest, "Not all required project options provided");
-            }
-
-            var projectWithSameTitle = _dbContext.Projects.SingleOrDefault(project => project.Title == _projectOptions.Title);
-
-            if (projectWithSameTitle != null)
-            {
-                return new Result<Project>(ErrorCode.Conflict, $"Project named #{_projectOptions.Title} already exists.");
-            }
-                    
-                                 
-
-            Project _newProject = new()
-            {
-                ProjectId = _projectOptions.ProjectId,
-
-                CreatorId = _projectOptions.CreatorId,
-
-                Title = _projectOptions.Title,
-
-                Description = _projectOptions.Description,
-                
-                TargetFund = _projectOptions.TargetFund
-            };
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                return new Result<Project>(ErrorCode.InternalServerError, "Could not save user.");
-            }
-
-            return new Result<Project>
-            {
-                Data = _newProject
-            };
-
-        }
-    
-
-
-
-
-        public Result<List<ProjectOptions>> GetAllProjects()
-        {
-            List<Project> _projects = _dbContext.Projects.ToList();
-
-            List<ProjectOptions> _projectOptions = new();
-
-            _projects.ForEach(project => _projectOptions.Add(new ProjectOptions()
-            {
-                ProjectId = project.ProjectId,
-
-                CreatorId = project.CreatorId,
-
-                Title = project.Title,
-
-                Description = project.Description,
-
-                //ProjectCategory = project.ProjectCategory,
-
-                Deadline = project.Deadline,
-
-                CurrentFund = project.CurrentFund,
-
-                TargetFund = project.TargetFund
-
-            }));
-
-            return new Result<List<ProjectOptions>>
-            {
-                Data = _projectOptions
-            };
+            db = _db;
+            userService = _userService;
         }
 
-           public Result<ProjectOptions> GetProjectdById(int _projectId)
+        public Result<Project> CreateProject(CreateProjectOptions options)
         {
-            if (_projectId <= 0)
+            if (options == null)
             {
-                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
+                return Result<Project>.ServiceFailed(StatusCode.BadRequest, "Null options");
             }
 
-            var project =  _dbContext.Projects
-               .SingleOrDefault(rew => rew.ProjectId == _projectId);
+            var user = userService.GetUserById(options.CreatorId).Data;
+            if (user == null)
+            {
+                return Result<Project>.ServiceFailed(StatusCode.NotFound, $"User with Id: {options.CreatorId} was not found");
+            }
 
+            //var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.Category, true);
+
+            var project = new Project
+            {
+                CreatorId = options.CreatorId,
+                Title = options.Title,
+                Description = options.Description,
+                //Category = categ,
+                Deadline = options.Deadline,
+                TargetFund = options.TargetFund
+            };
+
+            db.Projects.Add(project);
+            if (db.SaveChanges() <= 0)
+            {
+                return Result<Project>.ServiceFailed(StatusCode.InternalServerError, "Project could not be created");
+            }
+
+            return Result<Project>.ServiceSuccessful(project);
+        }
+
+        public Result<Project> GetProjectById(int projectId)
+        {
+            var project = db.Projects.Find(projectId);
             if (project == null)
             {
-                return new Result<ProjectOptions>(ErrorCode.NotFound, $"Project with id #{_projectId} not found.");
-            }            
-
-            ProjectOptions _projectOptions = new()
-            {
-                 ProjectId = project.ProjectId,
-
-                CreatorId = project.CreatorId,
-
-                Title = project.Title,
-
-                Description = project.Description,
-
-                //ProjectCategory = project.ProjectCategory,
-
-                Deadline = project.Deadline,
-
-                CurrentFund = project.CurrentFund,
-
-                TargetFund = project.TargetFund
-            };
-
-            return new Result<ProjectOptions>
-            {
-                Data = _projectOptions
-            };
+                return Result<Project>.ServiceFailed(StatusCode.NotFound, $"There is no user with this Id: {projectId}");
+            }
+            return Result<Project>.ServiceSuccessful(project);
         }
 
-        
-        public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions)
+        public Result<Project> GetProjectByRewardId(int rewardId)
         {
-            if (_projectOptions == null)
-            {
-                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Null options.");
-            }
-
-            if (_projectId <= 0)
-            {
-                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Id cannot be less than zero.");
-            }
-
-            var project = _dbContext.Projects
-               .SingleOrDefault(rew => rew.ProjectId == _projectId);
-
+            var project = db.Projects.Find(rewardId);
             if (project == null)
             {
-                return new Result<ProjectOptions>(ErrorCode.NotFound, $"Project with id #{_projectId} not found.");
+                return Result<Project>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
+            }
+            return Result<Project>.ServiceSuccessful(project);
+        }
+
+        public Result<bool> UpdateCurrentFund(Project project)
+        {
+            if (project == null)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
             }
 
-            if (_projectOptions.CurrentFund <= 0)
+            decimal sum = 0m;
+
+            foreach (var x in project.UserRewards)
             {
-                return new Result<ProjectOptions>(ErrorCode.BadRequest, "Not all required project options provided correctly.");
+                sum += x.Reward.Price;
             }
 
-            project.CurrentFund += _projectOptions.CurrentFund; 
+            project.CurrentFund = sum;
 
-            _dbContext.SaveChanges();
-
-            ProjectOptions projectOptions = new()
+            if (db.SaveChanges() <= 0)
             {
-                ProjectId = project.ProjectId,
+                return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Current Fund could not be updated");
+            }
+            return Result<bool>.ServiceSuccessful(true);
+        }
 
-                CreatorId = project.CreatorId,
+        public Result<List<Project>> GetAllProjects()
+        {
+            List<Project> projects = db.Projects.ToList();
 
-                Title = project.Title,
-
-                Description = project.Description,
-
-                //ProjectCategory = project.ProjectCategory,
-
-                Deadline = project.Deadline,
-
-                CurrentFund = project.CurrentFund,
-
-                TargetFund = project.TargetFund
-
-            };
-
-            return new Result<ProjectOptions>
+            return new Result<List<Project>>
             {
-                Data = projectOptions
+                Data = projects
             };
         }
 
-        public Result<int> DeleteProject(int _projectId)
+
+
+
+            
+
+
+
+
+        //public Result<Project> UpdateProject(int _projectId, ProjectOptions _projectOptions)
+        //{
+        //    if (_projectOptions == null)
+        //    {
+        //        return Result<Project>.ServiceFailed(StatusCode.BadRequest, "Null options.");
+        //    }
+
+        //    if (_projectId <= 0)
+        //    {
+        //        return  Result<Project>.ServiceFailed(StatusCode.BadRequest, "Id cannot be less than zero.");
+        //    }
+
+        //    var project = db.Projects
+        //       .SingleOrDefault(rew => rew.ProjectId == _projectId);
+
+        //    if (project == null)
+        //    {
+        //        return Result<Project>.ServiceFailed(StatusCode.NotFound, $"Project with id #{_projectId} not found.");
+        //    }
+
+        //    if (_projectOptions.CurrentFund <= 0)
+        //    {
+        //        return Result<Project>.ServiceFailed(StatusCode.BadRequest, "Not all required project options provided correctly.");
+        //    }
+
+            
+
+        //    ProjectOptions projectOptions = new()
+        //    {
+        //        ProjectId = project.ProjectId,
+
+        //        CreatorId = project.CreatorId,
+
+        //        Title = project.Title,
+
+        //        Description = project.Description,
+
+        //        //ProjectCategory = project.ProjectCategory,
+
+        //        Deadline = project.Deadline,
+
+        //        CurrentFund = project.CurrentFund,
+
+        //        TargetFund = project.TargetFund
+
+        //    };
+
+            
+        //}
+
+        public Result<bool> DeleteProject(int projectId)
         {
-           var projectToDelete = _dbContext.Projects.SingleOrDefault(project => project.ProjectId == _projectId);
+           var projectToDelete = db.Projects.SingleOrDefault(project => project.ProjectId == projectId);
 
             if (projectToDelete == null)
             {
-                return new Result<int>(ErrorCode.NotFound, $"Project with id #{_projectId} not found");
+                return Result<bool>.ServiceFailed(StatusCode.NotFound, $"Project with id #{projectId} not found");
             }
 
-            _dbContext.Projects.Remove(projectToDelete);
+            db.Projects.Remove(projectToDelete);
 
             try
             {
-                _dbContext.SaveChanges();
-
+                db.SaveChanges();
+            }
+            catch
+            {
+                return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Could not delete Project");
             }
 
-             catch
-            {
-                return new Result<int>(ErrorCode.InternalServerError, "Could not delete Project");
-            }
-            
-            return new Result<int>
-            {
-                Data = _projectId
-            };
+            return Result<bool>.ServiceSuccessful(true);
         }
+
+
+
+
+
+
+
     }
 }
 

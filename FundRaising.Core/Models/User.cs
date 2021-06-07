@@ -13,15 +13,13 @@ namespace FundRaising.Core.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime Created { get; set; }
-        public List<Project> CreatedProjects { get; set; }
-        public List<Project> FundedProjects { get; set; }
-        public List<UserReward> PurchasedRewards { get; set; }
+        public List<Project> Projects { get; set; }
+
         public User()
         {
+            Projects = new List<Project>();
             Created = DateTime.Now;
-            CreatedProjects = new List<Project>();
-            FundedProjects = new List<Project>();
-            PurchasedRewards = new List<UserReward>();
         }
+
     }
 }

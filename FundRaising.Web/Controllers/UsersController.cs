@@ -16,12 +16,18 @@ namespace FundRaising.Web.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly IUserService _userService;
-        private readonly IFundRaisingDbContext _db;
-        public UsersController(IFundRaisingDbContext db, IUserService userService)
+        private IUserService userService;
+        private IProjectService projectService;
+        private IRewardService rewardService;
+        private IUserRewardService userRewardService;
+        private FundRaisingDbContext db;
+        public UsersController()
         {
-            _db = db;
-            _userService = userService;
+            db = new FundRaisingDbContext();
+            userService = new UserService(db);
+            projectService = new ProjectService(db, userService);
+            rewardService = new RewardService(db, projectService);
+            userRewardService = new UserRewardService(db, userService, projectService, rewardService);
         }
 
 
@@ -29,7 +35,7 @@ namespace FundRaising.Web.Controllers
         // GET: Users
         public IActionResult Index()
         {
-            var allUsersResult = _userService.GetAllUsers();
+            var allUsersResult = userService.GetAllUsers();
 
             return View(allUsersResult.Data);
         }
@@ -42,12 +48,12 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var user = _userService.GetUserById(id.Value);
+            var user = userService.GetUserById(id.Value);
 
-            if (user.Error != null || user.Data == null)
-            {
-                return NotFound();
-            }
+            //if (user.ErrorCode != null || user.Data == null)
+            //{
+            //    return NotFound();
+            //}
 
             return View(user.Data);
         }
@@ -69,7 +75,7 @@ namespace FundRaising.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _userService.CreateUser(new UserOptions
+                userService.CreateUser(new CreateUserOptions
                 {
                     Username = user.Username,
                     Email = user.Email,
@@ -94,13 +100,13 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var user = _userService.GetUserById(id);
+            var user = userService.GetUserById(id);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _userService.GetAllUsers();
+                    userService.GetAllUsers();
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -123,9 +129,9 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var user = _userService.GetUserById(id.Value);
+            var user = userService.GetUserById(id.Value);
 
-            if (user.Error != null || user.Data == null)
+            if (user.ErrorText != null || user.Data == null)
             {
                 return NotFound();
             }
@@ -138,7 +144,7 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            _userService.DeleteUser(id);
+            userService.DeleteUser(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -146,14 +152,14 @@ namespace FundRaising.Web.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var allUsersResult = _userService.GetAllUsers();
+            var allUsersResult = userService.GetAllUsers();
             return Ok(allUsersResult.Data);
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            _userService.DeleteUser(id);
+            userService.DeleteUser(id);
             return NoContent();
         }
 

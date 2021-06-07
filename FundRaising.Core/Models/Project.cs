@@ -10,7 +10,6 @@ namespace FundRaising.Core.Models
     {
         public int ProjectId { get; set; }
         public int CreatorId { get; set; }
-        //public User User { get; set; } //ennooyme ton creator
         public string Title { get; set; }
         public string Description { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
@@ -19,14 +18,17 @@ namespace FundRaising.Core.Models
         public decimal CurrentFund { get; set; }
         public decimal TargetFund { get; set; }
         public List<Reward> AvailableRewards { get; set; }
-        
+        public List<UserReward> UserRewards { get; set; }
         public Project()
         {
             CurrentFund = 0m;
-
             Created = DateTime.Now;
-
             AvailableRewards = new List<Reward>();
+            UserRewards = new List<UserReward>();
         }
     }
 }
+        
+        
+
+

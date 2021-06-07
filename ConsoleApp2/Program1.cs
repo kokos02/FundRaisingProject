@@ -14,7 +14,7 @@ namespace ConsoleApp2
         public static void Main(string[] args)
         {
             
-            
+
             Console.WriteLine("Hello World!");
             var user = new User();
             var project1 = new Project();
@@ -26,10 +26,26 @@ namespace ConsoleApp2
                 Description = "perigrafh"
             };
 
-            IProjectService service = new ProjectService(db);
+            //using (var context = new FundRaisingDbContext())
+            //{
+            //    IUserService userService = new UserService(context);
+            //}   
 
+            var newuser = new UserOptions
+            {
+                Username = "alex",
+                Email = "alex@gmail.com",
+                Password = "12345"
+            };
 
             
-        }
+            }
     }
 }
+
+                
+
+
+
+
+
