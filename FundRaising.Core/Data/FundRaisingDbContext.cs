@@ -25,7 +25,7 @@ namespace FundRaising.Core.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder
                 .Entity<UserReward>()
                 .ToTable("UserRewards")
@@ -33,8 +33,8 @@ namespace FundRaising.Core.Data
         }
 
 
-        //public FundRaisingDbContext(DbContextOptions<FundRaisingDbContext> options)
-        //  : base(options)
+        //public FundRaisingDbContext()
+        //  : base()
         //{
         //}
 
