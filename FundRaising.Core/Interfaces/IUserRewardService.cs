@@ -10,7 +10,7 @@ namespace FundRaising.Core.Interfaces
 {
     public interface IUserRewardService
     {
-        public Result<bool> CreateRewardUser(CreateUserRewardOptions options);
+        public Result<bool> CreateUserReward(CreateUserRewardOptions options);
         public Result<UserReward> GetUserRewardById(int rewardId, int userId);
     }
 }

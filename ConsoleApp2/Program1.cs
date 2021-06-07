@@ -10,37 +10,49 @@ namespace ConsoleApp2
 {
     public class Program1
     {
-        
+
         public static void Main(string[] args)
         {
-            
 
-            Console.WriteLine("Hello World!");
-            var user = new User();
-            var project1 = new Project();
-            Console.WriteLine(project1.Created);
+            using FundRaisingDbContext db = new();
+            IUserService userservice = new UserService(db);
+            IProjectService projectservice = new ProjectService(db, userservice);
+            IRewardService rewardservice = new RewardService(db, projectservice);
+            IUserRewardService userrewardservice = new UserRewardService(db, userservice, projectservice, rewardservice);
 
-            var projectOptions = new ProjectOptions()
-            {
-                Title = "titlos",
-                Description = "perigrafh"
-            };
-
-            //using (var context = new FundRaisingDbContext())
+            //var newuser = new CreateUserOptions
             //{
-            //    IUserService userService = new UserService(context);
-            //}   
+            //    Username = "nikos",
+            //    Email = "nikos@gmail.com",
+            //    Password = "12345",
 
-            var newuser = new UserOptions
-            {
-                Username = "alex",
-                Email = "alex@gmail.com",
-                Password = "12345"
-            };
+            //};
 
-            
-            }
+            //var user = new User();
+            //var newproject = new Project
+            //{
+            //    CreatorId = 1,
+            //    TargetFund = 28383.456m,
+            //    Deadline = DateTime.Parse("2022/8/8"),
+
+            //};
+
+            //userservice.CreateUser(newuser);
+            //projectservice.CreateProject(newproject);
+
+            //var reward1 = new Reward(); 
+            //var reward2 = new Reward();
+
+            //newproject.AvailableRewards.Add(reward1);
+            //newproject.AvailableRewards.Add(reward2);
+
+
+
+
+
+        }
     }
+
 }
 
                 

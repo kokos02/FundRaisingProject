@@ -66,6 +66,7 @@ namespace FundRaising.Core.Services
 
         public Result<Project> GetProjectByRewardId(int rewardId)
         {
+            
             var project = db.Projects.Find(rewardId);
             if (project == null)
             {

@@ -25,7 +25,7 @@ namespace FundRaising.Core.Services
             rewardService = _rewardService;
         }
 
-        public Result<bool> CreateRewardUser(CreateUserRewardOptions options)
+        public Result<bool> CreateUserReward(CreateUserRewardOptions options)
         {
             if (options == null)
             {
