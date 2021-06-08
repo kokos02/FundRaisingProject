@@ -33,8 +33,13 @@ a:hover {
 	padding:50px 0;
 	margin-top:50px;
 }
+
+.footer {
+	padding: 50px 0;
+	margin-top: 50px;
+}
 .navbar-lg {
-	min-height:76px;
+	min-height: 76px;
 }
 .navbar-lg .navbar-brand {
 	line-height:1;
@@ -637,13 +642,15 @@ legend {
 	padding:60px 0 40px 0;
 	margin-top:0px;
 }
-ul,ol {
-	-moz-padding-start:0px;
-	-webkit-padding-start:0px;
-	-khtml-padding-start:0px;
-	-o-padding-start:0px;
-	padding-start:0px;
-	padding-left:0px;
+
+
+ul, ol {
+	-moz-padding-start: 0px;
+	-webkit-padding-start: 0px;
+	-khtml-padding-start: 0px;
+	-o-padding-start: 0px;
+	padding-start: 0px;
+	padding-left: 0px;
 }
 .footernote {
 	font-size:30px;
@@ -652,6 +659,15 @@ ul,ol {
 .footer a {
 	color:#00bba7;
 }
+
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+
 #contactform input,#contactform textarea {
 	border:0px;
 	border:1px solid #eee;
