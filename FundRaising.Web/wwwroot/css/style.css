@@ -643,6 +643,16 @@ legend {
 	margin-top:0px;
 }
 
+header {
+	margin-bottom: 6%;
+}
+
+
+@media screen and (max-width: 1200px) {
+	header {
+		margin-bottom: 12%;
+	}
+}
 
 ul, ol {
 	-moz-padding-start: 0px;
@@ -661,7 +671,6 @@ ul, ol {
 }
 
 .footer {
-	position: fixed;
 	left: 0;
 	bottom: 0;
 	width: 100%;
