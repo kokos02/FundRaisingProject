@@ -13,14 +13,15 @@ using FundRaising.Core.Options;
 
 namespace FundRaising.Web.Controllers
 {
-    public class ProjectsController : Controller
+    public class RewardsController : Controller
     {
         private IUserService userService;
         private IProjectService projectService;
         private IRewardService rewardService;
         private IUserRewardService userRewardService;
         private FundRaisingDbContext db;
-        public ProjectsController()
+
+        public RewardsController()
         {
             db = new FundRaisingDbContext();
             userService = new UserService(db);
@@ -29,14 +30,14 @@ namespace FundRaising.Web.Controllers
             userRewardService = new UserRewardService(db, userService, projectService, rewardService);
         }
 
-        // GET: Projects
+        // GET: Rewards
         public IActionResult Index()
         {
-            var allProjectsResult = projectService.GetAllProjects();
-            return View(allProjectsResult.Data);
+            var allRewardsResult = rewardService.GetAllRewards();
+            return View(allRewardsResult.Data);
         }
 
-        // GET: Projects/Details/5
+        // GET: Rewards/Details/5
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -44,48 +45,44 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var project = projectService.GetProjectById(id.Value);
-                
-            if (project == null)
+            var reward = rewardService.GetRewardById(id.Value);
+
+            if (reward == null)
             {
                 return NotFound();
             }
 
-            return View(project.Data);
+            return View(reward.Data);
         }
 
-        // GET: Projects/Create
+        // GET: Rewards/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Projects/Create
+        // POST: Rewards/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Project project)
+        public IActionResult Create(Reward reward)
         {
             if (ModelState.IsValid)
             {
-                projectService.CreateProject(new CreateProjectOptions
+                rewardService.CreateReward(new CreateRewardOptions
                 {
-                    CreatorId = project.CreatorId,
-                    Title = project.Title,
-                    Description = project.Description,
-                    ProjectCategory = project.ProjectCategory.ToString(),
-                    Deadline = project.Deadline,
-                    TargetFund = project.TargetFund,
+                    ProjectId = reward.ProjectId,
+                    Title = reward.Title,
+                    Description = reward.Description,
+                    Price = reward.Price
 
-                }); 
+                });
             }
-            return View(project);
+            return View(reward);
         }
-                
-                
 
-        // GET: Projects/Edit/5
+        // GET: Rewards/Edit/5
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -93,22 +90,22 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var project = db.Projects.Find(id);
-            if (project == null)
+            var reward = db.Rewards.Find(id);
+            if (reward == null)
             {
                 return NotFound();
             }
-            return View(project);
+            return View(reward);
         }
 
-        // POST: Projects/Edit/5
+        // POST: Rewards/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Project project)
+        public IActionResult Edit(int id, Reward reward)
         {
-            if (id != project.ProjectId)
+            if (id != reward.RewardId)
             {
                 return NotFound();
             }
@@ -117,12 +114,12 @@ namespace FundRaising.Web.Controllers
             {
                 try
                 {
-                    db.Update(project);
+                    db.Update(reward);
                     db.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.ProjectId))
+                    if (!RewardExists(reward.RewardId))
                     {
                         return NotFound();
                     }
@@ -133,10 +130,10 @@ namespace FundRaising.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(reward);
         }
 
-        // GET: Projects/Delete/5
+        // GET: Rewards/Delete/5
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -144,30 +141,31 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
-            var project = db.Projects
-                .FirstOrDefault(m => m.ProjectId == id);
-            if (project == null)
+            var reward = db.Rewards
+                .FirstOrDefault(m => m.RewardId == id);
+            if (reward == null)
             {
                 return NotFound();
             }
 
-            return View(project);
+            return View(reward);
         }
 
-        // POST: Projects/Delete/5
+        // POST: Rewards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var project = db.Projects.Find(id);
-            db.Projects.Remove(project);
+            var reward = db.Rewards.Find(id);
+            db.Rewards.Remove(reward);
             db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjectExists(int id)
-        {
-            return db.Projects.Any(e => e.ProjectId == id);
+            private bool RewardExists(int id)
+            {
+                return db.Rewards.Any(e => e.RewardId == id);
+            }
         }
     }
-}
+
