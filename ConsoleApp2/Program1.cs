@@ -20,6 +20,13 @@ namespace ConsoleApp2
             IRewardService rewardservice = new RewardService(db, projectservice);
             IUserRewardService userrewardservice = new UserRewardService(db, userservice, projectservice, rewardservice);
 
+            //var reward50 = new CreateRewardOptions
+            //{
+            //    Title = "RewardPackage",
+            //    Description = "Tshirt",
+            //    Price = 500000
+            //};
+            //rewardservice.CreateReward(reward50);
             //var newuser = new CreateUserOptions
             //{
             //    Username = "nikos",

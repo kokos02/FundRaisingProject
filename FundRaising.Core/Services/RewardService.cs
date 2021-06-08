@@ -81,6 +81,9 @@ namespace FundRaising.Core.Services
             }
 
             db.Rewards.Remove(reward);
+            var project = projectService.GetProjectByRewardId(rewardId).Data;
+            project.AvailableRewards.Remove(reward);
+
             if (db.SaveChanges() <= 0)
             {
                 return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "The reward could not be deleted");

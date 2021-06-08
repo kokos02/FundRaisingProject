@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundRaising.Core.Migrations
 {
     [DbContext(typeof(FundRaisingDbContext))]
-    [Migration("20210607060638_initial")]
+    [Migration("20210608193958_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
