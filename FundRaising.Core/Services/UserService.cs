@@ -78,12 +78,48 @@ namespace FundRaising.Core.Services
             return Result<bool>.ServiceSuccessful(true);
         }
 
-        public Result<bool> UpdateUser(int userId, UserOptions options)
+        public Result<bool> UpdateUser(int userId, UpdateUserOptions options)
         {
-            throw new NotImplementedException();
-        }
-        
+            if (options == null)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.BadRequest, "Null options");
+            }
 
+            var user = GetUserById(userId).Data;
+
+            if (user == null)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.BadRequest, $"User with {userId} was not found");
+            }
+            
+            if (user.Username != options.Username)
+            {
+                user.Username = options.Username;
+            }
+
+            if (user.Email != options.Email)
+            {
+                user.Email = options.Email;
+            }
+
+            if (user.Password != options.Password)
+            {
+                user.Password = options.Password;
+            }
+
+            if (db.SaveChanges() <= 0)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "User could not be updated");
+            }
+
+            return Result<bool>.ServiceSuccessful(true);
+        }
     }
 }
+        
+
+
+
+
+
 

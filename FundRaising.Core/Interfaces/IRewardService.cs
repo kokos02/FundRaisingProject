@@ -13,7 +13,7 @@ namespace FundRaising.Core.Interfaces
         public Result<Reward> CreateReward(CreateRewardOptions options);
         public Result<Reward> GetRewardById(int rewardId);
         public Result<List<Reward>> GetAllRewards();
-        //public Result<Reward> UpdateReward(int rewardId, RewardOptions rewardOptions);
+        public Result<bool> UpdateReward(int rewardId, UpdateRewardOptions options);
         public Result<bool> DeleteReward(int rewardId);
     }
 }

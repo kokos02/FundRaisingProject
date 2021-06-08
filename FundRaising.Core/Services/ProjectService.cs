@@ -33,31 +33,30 @@ namespace FundRaising.Core.Services
                 return Result<Project>.ServiceFailed(StatusCode.NotFound, $"User with Id: {options.CreatorId} was not found");
             }
 
-            if(options.ProjectCategory == "7")
+            if(options.ProjectCategory == null)
             {
                 return Result<Project>.ServiceFailed(StatusCode.BadRequest, "You have to choose a category");
             }
             
-            var categ = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.ProjectCategory, true);
-           
-            
+            var category = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.ProjectCategory, true);
 
             var project = new Project
             {
                 CreatorId = options.CreatorId,
                 Title = options.Title,
                 Description = options.Description,
-                ProjectCategory = categ,
+                ProjectCategory = category,
                 Deadline = options.Deadline,
                 TargetFund = options.TargetFund
             };
 
+            user.Projects.Add(project);
             db.Projects.Add(project);
             if (db.SaveChanges() <= 0)
             {
                 return Result<Project>.ServiceFailed(StatusCode.InternalServerError, "Project could not be created");
             }
-
+            
             return Result<Project>.ServiceSuccessful(project);
         }
 
@@ -73,14 +72,21 @@ namespace FundRaising.Core.Services
 
         public Result<Project> GetProjectByRewardId(int rewardId)
         {
+
+            var project = SearchProject(new SearchProjectOptions
+            {
+                RewardId = rewardId
+            }).SingleOrDefault();
             
-            var project = db.Projects.Find(rewardId);
             if (project == null)
             {
                 return Result<Project>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
             }
             return Result<Project>.ServiceSuccessful(project);
         }
+
+            
+
 
         public Result<bool> UpdateCurrentFund(Project project)
         {
@@ -115,63 +121,53 @@ namespace FundRaising.Core.Services
             };
         }
 
+        public Result<bool> UpdateProject(int projectId, UpdateProjectOptions options)
+        {
+            if (options == null)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.BadRequest, "Null options.");
+            }
 
+            var project = GetProjectById(projectId).Data;
 
+            if (project == null)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.NotFound, $"Project with ID {projectId} was not found");
+            }
 
-            
+            if (project.Title != options.Title)
+            {
+                project.Title = options.Title;
+            }
 
+            if (project.Description != options.Description)
+            {
+                project.Description = options.Description;
+            }
 
+            var category = (ProjectCategory)Enum.Parse(typeof(ProjectCategory), options.ProjectCategory, true);
+            if (project.ProjectCategory != category)
+            {
+                project.ProjectCategory = category;
+            }
 
+            if (project.TargetFund != options.TargetFund)
+            {
+                project.TargetFund = options.TargetFund;
+            }
 
-        //public Result<Project> UpdateProject(int _projectId, ProjectOptions _projectOptions)
-        //{
-        //    if (_projectOptions == null)
-        //    {
-        //        return Result<Project>.ServiceFailed(StatusCode.BadRequest, "Null options.");
-        //    }
+            if (project.Deadline != options.Deadline)
+            {
+                project.Deadline = options.Deadline;
+            }
 
-        //    if (_projectId <= 0)
-        //    {
-        //        return  Result<Project>.ServiceFailed(StatusCode.BadRequest, "Id cannot be less than zero.");
-        //    }
+            if (db.SaveChanges() <= 0)
+            {
+                return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Project could not be updated");
+            }
+            return Result<bool>.ServiceSuccessful(true);
 
-        //    var project = db.Projects
-        //       .SingleOrDefault(rew => rew.ProjectId == _projectId);
-
-        //    if (project == null)
-        //    {
-        //        return Result<Project>.ServiceFailed(StatusCode.NotFound, $"Project with id #{_projectId} not found.");
-        //    }
-
-        //    if (_projectOptions.CurrentFund <= 0)
-        //    {
-        //        return Result<Project>.ServiceFailed(StatusCode.BadRequest, "Not all required project options provided correctly.");
-        //    }
-
-            
-
-        //    ProjectOptions projectOptions = new()
-        //    {
-        //        ProjectId = project.ProjectId,
-
-        //        CreatorId = project.CreatorId,
-
-        //        Title = project.Title,
-
-        //        Description = project.Description,
-
-        //        //ProjectCategory = project.ProjectCategory,
-
-        //        Deadline = project.Deadline,
-
-        //        CurrentFund = project.CurrentFund,
-
-        //        TargetFund = project.TargetFund
-
-        //    };
-
-            
-        //}
+        }
 
         public Result<bool> DeleteProject(int projectId)
         {
@@ -196,11 +192,51 @@ namespace FundRaising.Core.Services
             return Result<bool>.ServiceSuccessful(true);
         }
 
-        public IQueryable<Project> SearchProject(int rewardId)
+        public IQueryable<Project> SearchProject(SearchProjectOptions options)
         {
-            
-            throw new NotImplementedException();
+
+            var query = db.Set<Project>().AsQueryable();
+
+            if(options.ProjectCategory != null)
+            {
+                query = query.Where(a => a.ProjectCategory == options.ProjectCategory);
+            }
+
+            if(options.text != "")
+            {
+                query = query.Where(b => b.Title.Contains(options.text) || b.Description.Contains(options.text));
+            }
+
+            if(options.RewardId != null)
+            {
+                query = query.Where(c => c.AvailableRewards.Any(a => a.RewardId == options.RewardId.Value));
+            }
+
+            return query;
         }
+
     }
 }
+
+
+            
+
+
+
+
+            
+
+            
+
+            
+
+
+
+            
+
+
+
+
+
+       
 

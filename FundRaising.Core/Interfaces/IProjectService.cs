@@ -14,13 +14,13 @@ namespace FundRaising.Core.Interfaces
         public Result<Project> GetProjectById(int projectId);
         public Result<Project> GetProjectByRewardId(int rewardId);
         public Result<bool> UpdateCurrentFund(Project project);
-        
         public Result<List<Project>> GetAllProjects();
-        //public Result<ProjectOptions> UpdateProject(int _projectId, ProjectOptions _projectOptions);
+        Result<bool> UpdateProject(int projectId, UpdateProjectOptions options);
         public Result<bool> DeleteProject(int projectId);
-
-        public IQueryable<Project> SearchProject(int rewardId);
-
-
+        public IQueryable<Project> SearchProject(SearchProjectOptions options);
     }
 }
+        
+
+
+

@@ -60,13 +60,14 @@ namespace FundRaising.Core.Services
                     return Result<bool>.ServiceFailed(StatusCode.NotFound, "User, project or reward could not be found");
                 }
 
-                var rewardUser = new UserReward()
+                var userReward = new UserReward()
                 {
                     User = user,
                     Reward = reward
                 };
 
-                project.UserRewards.Add(rewardUser);
+                project.UserRewards.Add(userReward);
+                db.UserRewards.Add(userReward);
 
                 if (!projectService.UpdateCurrentFund(project).Exists)
                 {
