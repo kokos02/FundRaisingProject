@@ -60,21 +60,25 @@ namespace ConsoleApp2
             //};
 
             //userservice.CreateUser(user25);
-            var user100 = new User();
-            var project100 = new Project();
-            var reward100 = new Reward();
-            var userreward100 = new UserReward();
+            //var user100 = new User();
+            //var project100 = new Project();
+            //var reward100 = new Reward();
+            //var userreward100 = new UserReward();
 
-            var project300 = new CreateProjectOptions();
-            projectservice.CreateProject(project300);
+            //var project300 = new CreateProjectOptions();
+            //projectservice.CreateProject(project300);
 
-            var project400 = new CreateProjectOptions
-            {
-                   CreatorId = 10,
-                   ProjectCategory = "7"
-            };
+            //var project400 = new CreateProjectOptions
+            //{
+            //       CreatorId = 10,
+            //       ProjectCategory = "7"
+            //};
 
-            projectservice.CreateProject(project400);
+            //projectservice.CreateProject(project400);
+
+            //var user
+
+
 
 
 
