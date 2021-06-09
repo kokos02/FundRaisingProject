@@ -62,6 +62,22 @@ namespace FundRaising.Web.Controllers
             return View();
         }
 
+        public IActionResult Product(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var project = db.Projects.Find(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
         // POST: Projects/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
