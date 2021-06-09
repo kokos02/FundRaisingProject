@@ -95,7 +95,7 @@ header .navbar-white {
 	font-family:Dosis;
 }
 .text-pageheader {
-	 text-align:center;
+	text-align:center;
 	color:#fff;
 	z-index:2;
 	position:relative;
@@ -644,15 +644,15 @@ legend {
 }
 
 header {
-	margin-bottom: 6%;
+	margin-bottom: 4%;
 }
 
 
-@media screen and (max-width: 1200px) {
+/*@media screen and (max-width: 1200px) {
 	header {
 		margin-bottom: 12%;
 	}
-}
+}*/
 
 ul, ol {
 	-moz-padding-start: 0px;
@@ -696,7 +696,7 @@ body {
 	}
 
 footer {
-	position: absolute;
+	position: sticky;
 	bottom: 0;
 	top: 100%;
 	width: 100%;
