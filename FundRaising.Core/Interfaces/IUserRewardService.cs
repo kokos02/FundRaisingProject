@@ -13,5 +13,7 @@ namespace FundRaising.Core.Interfaces
         public Result<bool> CreateUserReward(CreateUserRewardOptions options);
         public Result<UserReward> GetUserRewardById(int rewardId, int userId);
         public Result<List<UserReward>> GetAllUserRewards();
+        public IQueryable<Project> GetProjectsFundedByUser(int userId);
     }
 }
+
