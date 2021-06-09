@@ -85,7 +85,20 @@ namespace FundRaising.Web.Controllers
             return View(user);
         }
 
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var user = db.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
 
 
         // POST: Users/Edit/5

@@ -2,12 +2,8 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Models;
 using FundRaising.Core.Options;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FundRaising.Core.Services
 {
@@ -44,6 +40,10 @@ namespace FundRaising.Core.Services
         public Result<User> GetUserById(int userId)
         {
             var user = db.Users.Find(userId);
+            //var user = SearchUser(new SearchProjectOptions
+            //{
+            //    RewardId = rewardId
+            //}).SingleOrDefault();
             if (user == null)
             {
                 return Result<User>.ServiceFailed(StatusCode.NotFound, $"There is no user with this Id: {userId}");

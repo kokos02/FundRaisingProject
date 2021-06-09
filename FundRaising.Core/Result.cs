@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FundRaising.Core
+﻿namespace FundRaising.Core
 {
     public class Result<T>
     {

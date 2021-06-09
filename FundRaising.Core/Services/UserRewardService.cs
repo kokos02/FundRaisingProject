@@ -2,11 +2,8 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Options;
 using FundRaising.Core.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FundRaising.Core.Services
 {
@@ -53,9 +50,9 @@ namespace FundRaising.Core.Services
             {
                 var user = userService.GetUserById(options.UserId).Data;
                 var reward = rewardService.GetRewardById(options.RewardId).Data;
-                var project = projectService.GetProjectByRewardId(options.RewardId).Data;
+                //var project = projectService.GetProjectByRewardId(options.RewardId).Data;
 
-                if (user == null || reward == null || project == null)
+                if (user == null || reward == null )
                 {
                     return Result<bool>.ServiceFailed(StatusCode.NotFound, "User, project or reward could not be found");
                 }
@@ -65,16 +62,24 @@ namespace FundRaising.Core.Services
                     User = user,
                     Reward = reward
                 };
-
-                project.UserRewards.Add(userReward);
                 db.UserRewards.Add(userReward);
+                db.SaveChanges();
 
-                if (!projectService.UpdateCurrentFund(project).Exists)
+               // projectService.UpdateCurrentFund;
+
+                
+                //project.UserRewards.Add(userReward);
+                //if (!projectService.UpdateCurrentFund(project).Exists)
+                //{
+                //    return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Reward could not be bought");
+                //}
+                if (db.SaveChanges() <= 0)
                 {
-                    return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Reward could not be bought");
+                    return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "UserReward could not be created");
                 }
-
+                
                 return Result<bool>.ServiceSuccessful(true);
+
             }
         }
 
@@ -87,7 +92,8 @@ namespace FundRaising.Core.Services
 
             if (userReward == null)
             {
-                Result<UserReward>.ServiceFailed(StatusCode.NotFound, "Reward could not be found");
+               return Result<UserReward>.ServiceFailed(StatusCode.NotFound, "Reward could not be found");
+                
             }
 
             return Result<UserReward>.ServiceSuccessful(userReward);

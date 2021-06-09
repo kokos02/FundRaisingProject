@@ -162,10 +162,26 @@ namespace FundRaising.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-            private bool RewardExists(int id)
-            {
-                return db.Rewards.Any(e => e.RewardId == id);
-            }
+        private bool RewardExists(int id)
+        {
+            return db.Rewards.Any(e => e.RewardId == id);
         }
-    }
 
+
+        // POST: Rewards/Buy/5
+        [HttpPost, ActionName("Buy")]
+        [ValidateAntiForgeryToken]
+        
+        public IActionResult Buy(Reward reward)
+        {
+            userRewardService.CreateUserReward(new CreateUserRewardOptions
+            {
+                RewardId = reward.RewardId,
+                UserId = 1
+            });
+            return RedirectToAction(nameof(Index));
+        }
+
+
+    }
+}

@@ -5,8 +5,6 @@ using FundRaising.Core.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FundRaising.Core.Services
 {
@@ -72,7 +70,7 @@ namespace FundRaising.Core.Services
 
         public Result<Project> GetProjectByRewardId(int rewardId)
         {
-
+            
             var project = SearchProject(new SearchProjectOptions
             {
                 RewardId = rewardId
@@ -197,15 +195,15 @@ namespace FundRaising.Core.Services
 
             var query = db.Set<Project>().AsQueryable();
 
-            if(options.ProjectCategory != null)
-            {
-                query = query.Where(a => a.ProjectCategory == options.ProjectCategory);
-            }
+            //if(options.ProjectCategory != null)
+            //{
+            //    query = query.Where(a => a.ProjectCategory == options.ProjectCategory);
+            //}
 
-            if(options.text != "")
-            {
-                query = query.Where(b => b.Title.Contains(options.text) || b.Description.Contains(options.text));
-            }
+            //if(options.text != "")
+            //{
+            //    query = query.Where(b => b.Title.Contains(options.text) || b.Description.Contains(options.text));
+            //}
 
             if(options.RewardId != null)
             {
