@@ -83,7 +83,13 @@ namespace FundRaising.Core.Services
             return Result<Project>.ServiceSuccessful(project);
         }
 
-            
+
+        public IQueryable<Project> GetRewardsByProject(int projectId)
+        {
+            var query = db.Set<Project>().AsQueryable().Where(c => c.AvailableRewards.Any());
+            return query;
+        }
+
 
 
         public Result<bool> UpdateCurrentFund(Project project)

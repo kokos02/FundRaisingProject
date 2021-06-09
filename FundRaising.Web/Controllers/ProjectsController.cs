@@ -55,11 +55,15 @@ namespace FundRaising.Web.Controllers
         }
 
         // GET: Projects/Create
-
-        
         public IActionResult Create()
         {
             return View();
+        }
+
+        public IActionResult ShowProjectRewards(int id)
+        {
+            var rewards = projectService.GetRewardsByProject(id);
+            return View(rewards);
         }
 
         public IActionResult Product(int? id)
@@ -70,6 +74,7 @@ namespace FundRaising.Web.Controllers
             }
 
             var project = db.Projects.Find(id);
+        
             if (project == null)
             {
                 return NotFound();
