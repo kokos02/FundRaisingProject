@@ -2,6 +2,7 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Models;
 using FundRaising.Core.Options;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,12 +71,11 @@ namespace FundRaising.Core.Services
 
         public Result<Project> GetProjectByRewardId(int rewardId)
         {
-            
             var project = SearchProject(new SearchProjectOptions
             {
                 RewardId = rewardId
-            }).SingleOrDefault();
-            
+            }).Include(a => a.UserRewards).ThenInclude(a => a.Reward).SingleOrDefault();
+
             if (project == null)
             {
                 return Result<Project>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
@@ -83,15 +83,12 @@ namespace FundRaising.Core.Services
             return Result<Project>.ServiceSuccessful(project);
         }
 
-
-        public IQueryable<Project> GetRewardsByProject(int projectId)
-        {
-            var query = db.Set<Project>().AsQueryable().Where(c => c.AvailableRewards.Any());
-            return query;
-        }
-
-
-
+        //public IQueryable<Project> GetRewardsByProject(int projectId)
+        //{
+        //    var query = db.Set<Project>().AsQueryable().Where(c => c.AvailableRewards.Any());
+        //    return query;
+        //}
+            
         public Result<bool> UpdateCurrentFund(Project project)
         {
             if (project == null)
@@ -173,6 +170,13 @@ namespace FundRaising.Core.Services
 
         }
 
+
+
+
+
+
+
+
         public Result<bool> DeleteProject(int projectId)
         {
            var projectToDelete = db.Projects.SingleOrDefault(project => project.ProjectId == projectId);
@@ -192,35 +196,27 @@ namespace FundRaising.Core.Services
             {
                 return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Could not delete Project");
             }
-
             return Result<bool>.ServiceSuccessful(true);
+
         }
 
         public IQueryable<Project> SearchProject(SearchProjectOptions options)
         {
-
             var query = db.Set<Project>().AsQueryable();
-
-            //if(options.ProjectCategory != null)
-            //{
-            //    query = query.Where(a => a.ProjectCategory == options.ProjectCategory);
-            //}
-
-            //if(options.text != "")
-            //{
-            //    query = query.Where(b => b.Title.Contains(options.text) || b.Description.Contains(options.text));
-            //}
 
             if(options.RewardId != null)
             {
-                query = query.Where(c => c.AvailableRewards.Any(a => a.RewardId == options.RewardId.Value));
+                query = query.Where(c => c.AvailableRewards.Any(a => a.RewardId == options.RewardId.Value)).Include(a => a.AvailableRewards);
             }
 
             return query;
         }
-
     }
 }
+
+            
+
+
 
 
             

@@ -50,7 +50,7 @@ namespace FundRaising.Core.Services
             {
                 var user = userService.GetUserById(options.UserId).Data;
                 var reward = rewardService.GetRewardById(options.RewardId).Data;
-                //var project = projectService.GetProjectByRewardId(options.RewardId).Data;
+                var project = projectService.GetProjectByRewardId(options.RewardId).Data;
 
                 if (user == null || reward == null )
                 {
@@ -63,16 +63,16 @@ namespace FundRaising.Core.Services
                     Reward = reward
                 };
                 db.UserRewards.Add(userReward);
+
+                project.UserRewards.Add(userReward);
+                if (!projectService.UpdateCurrentFund(project).Exists)
+                {
+                    return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Reward could not be bought");
+                }
+                
                 db.SaveChanges();
 
-               // projectService.UpdateCurrentFund;
-
                 
-                //project.UserRewards.Add(userReward);
-                //if (!projectService.UpdateCurrentFund(project).Exists)
-                //{
-                //    return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "Reward could not be bought");
-                //}
                 if (db.SaveChanges() <= 0)
                 {
                     return Result<bool>.ServiceFailed(StatusCode.InternalServerError, "UserReward could not be created");
@@ -109,10 +109,26 @@ namespace FundRaising.Core.Services
             };
         }
 
-        public IQueryable<Project> GetProjectsFundedByUser(int userId)
+        public IQueryable<Project> SearchProjectsFundedByUser(SearchProjectsFunded options)
         {
-            var query = db.Set<Project>().AsQueryable().Where(c => c.UserRewards.Any(i => i.UserId == userId));
+            var query = db.Set<Project>().AsQueryable().Where(c => c.UserRewards.Any(i => i.UserId == options.UserId));
             return query;
+        }
+            
+
+        public Result<List<Project>> GetProjectsFundedByUser(int userId)
+        {
+            var projects = SearchProjectsFundedByUser(new SearchProjectsFunded
+            {
+                UserId = userId
+            }).ToList();
+
+
+            if (projects == null)
+            {
+                return Result<List<Project>>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
+            }
+            return Result<List<Project>>.ServiceSuccessful(projects);
         }
     }
 }
