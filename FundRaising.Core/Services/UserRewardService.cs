@@ -103,6 +103,11 @@ namespace FundRaising.Core.Services
             };
         }
 
+        public IQueryable<Project> GetProjectsFundedByUser(int userId)
+        {
+            var query = db.Set<Project>().AsQueryable().Where(c => c.UserRewards.Any(i => i.UserId == userId));
+            return query;
+        }
     }
 }
             
