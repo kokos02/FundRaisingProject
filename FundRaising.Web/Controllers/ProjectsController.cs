@@ -125,6 +125,8 @@ namespace FundRaising.Web.Controllers
 
             var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
 
+            
+
             var project = db.Projects.Find(id);
             if (project == null)
             {
@@ -144,6 +146,47 @@ namespace FundRaising.Web.Controllers
                     return BadRequest("Invalid user.");
             }
 
+            
+
+            return View(project);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Project _project)
+        {
+            if (id != _project.ProjectId)
+            {
+                return NotFound();
+            }
+
+            var project = projectService.GetProjectById(id);
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    projectService.UpdateProject(id, new UpdateProjectOptions
+                    {
+                        Title = _project.Title,
+                        Description = _project.Description,
+                        TargetFund = _project.TargetFund,
+                        ProjectCategory = _project.ProjectCategory.ToString(),
+                        Deadline = _project.Deadline
+                    });
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+
+                    throw;
+
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View(project);
         }
 

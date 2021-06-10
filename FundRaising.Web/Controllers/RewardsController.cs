@@ -103,23 +103,29 @@ namespace FundRaising.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Reward reward)
+        public IActionResult Edit(int id, Reward _reward)
         {
-            if (id != reward.RewardId)
+            if (id != _reward.RewardId)
             {
                 return NotFound();
             }
+
+            var reward = rewardService.GetRewardById(id);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Update(reward);
-                    db.SaveChanges();
+                    rewardService.UpdateReward(id, new UpdateRewardOptions
+                    {
+                        Title = _reward.Title,
+                        Description = _reward.Description,
+                        Price = _reward.Price
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RewardExists(reward.RewardId))
+                    if (!RewardExists(_reward.RewardId))
                     {
                         return NotFound();
                     }
@@ -130,7 +136,7 @@ namespace FundRaising.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(reward);
+            return View(_reward);
         }
 
         // GET: Rewards/Delete/5

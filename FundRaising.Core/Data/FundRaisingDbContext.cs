@@ -19,34 +19,12 @@ namespace FundRaising.Core.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder
                 .Entity<UserReward>()
                 .ToTable("UserRewards")
                 .HasKey(c => new { c.RewardId, c.UserId });
         }
 
-
-        //public FundRaisingDbContext()
-        //  : base()
-        //{
-        //}
-
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-        //    base.OnModelCreating(builder);
-        //}
-
-        //public async Task<int> SaveChangesAsync()
-        //{
-        //    return await base.SaveChangesAsync();
-        //}
-        //public override int SaveChanges()
-        //{
-        //    return base.SaveChanges();
-        //}
 
     }
 }

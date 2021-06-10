@@ -19,9 +19,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -36,9 +33,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RewardId">Edit</a> |

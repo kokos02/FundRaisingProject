@@ -115,11 +115,17 @@ namespace FundRaising.Web.Controllers
 
             var user = userService.GetUserById(id);
 
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    userService.GetAllUsers();
+                    userService.UpdateUser(id, new UpdateUserOptions
+                    {
+                        Username = _user.Username,
+                        Email = _user.Email,
+                        Password = _user.Password
+                    });
 
                 }
                 catch (DbUpdateConcurrencyException)
