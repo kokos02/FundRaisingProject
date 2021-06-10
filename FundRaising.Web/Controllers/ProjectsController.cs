@@ -176,13 +176,31 @@ namespace FundRaising.Web.Controllers
             {
                 return NotFound();
             }
-
+           
+            var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
+            
             var project = db.Projects
                 .FirstOrDefault(m => m.ProjectId == id);
             if (project == null)
             {
                 return NotFound();
             }
+
+            else if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("You must be logged in to delete the project");
+            }
+
+            else
+            {
+                var dbUser = db.Users.FirstOrDefault(e => e.Username == userName);
+                if (dbUser == null)
+                    return NotFound("User not found.");
+
+                if (dbUser.UserId != project.CreatorId)
+                    return BadRequest("Invalid user.");
+            }
+
 
             return View(project);
         }
