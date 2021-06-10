@@ -188,11 +188,31 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
+            var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
+
+
             var reward = db.Rewards
                 .FirstOrDefault(m => m.RewardId == id);
+
             if (reward == null)
             {
                 return NotFound();
+            }
+
+            else if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("You must be logged in to delete the reward");
+            }
+
+            else
+            {
+                var dbUser = db.Users.FirstOrDefault(e => e.Username == userName);
+                var dbproject = db.Projects.FirstOrDefault(x => x.ProjectId == reward.ProjectId);
+                if (dbUser == null)
+                    return NotFound("User not found.");
+
+                if (dbUser.UserId != dbproject.CreatorId)
+                    return BadRequest("Invalid user.");
             }
 
             return View(reward);
