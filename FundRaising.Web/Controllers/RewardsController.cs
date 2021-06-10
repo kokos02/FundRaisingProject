@@ -40,6 +40,9 @@ namespace FundRaising.Web.Controllers
         // GET: Rewards/Details/5
         public IActionResult Details(int? id)
         {
+            var dbReward = db.Rewards.FirstOrDefault(e => e.RewardId == id);
+            HttpContext.Response.Cookies.Append("RewardId", dbReward.RewardId.ToString());
+
             if (id == null)
             {
                 return NotFound();
@@ -68,11 +71,12 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Reward reward)
         {
+            var id = HttpContext.Request.Cookies["projectId"];
             if (ModelState.IsValid)
             {
                 rewardService.CreateReward(new CreateRewardOptions
                 {
-                    ProjectId = reward.ProjectId,
+                    ProjectId = int.Parse(id),
                     Title = reward.Title,
                     Description = reward.Description,
                     Price = reward.Price

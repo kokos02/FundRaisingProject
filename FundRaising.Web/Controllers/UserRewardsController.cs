@@ -58,7 +58,17 @@ namespace FundRaising.Web.Controllers
         // GET: UserRewards/Create
         public IActionResult Create()
         {
-           return View();
+            var id = HttpContext.Request.Cookies["id"];
+            var rewardid = HttpContext.Request.Cookies["RewardId"];
+
+
+            userRewardService.CreateUserReward(new CreateUserRewardOptions
+            {
+                UserId = int.Parse(id),
+                RewardId = int.Parse(rewardid)
+            });
+
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: UserRewards/Create
@@ -68,16 +78,17 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserReward userReward)
         {
-            if (ModelState.IsValid)
-            {
+
+            var id = HttpContext.Request.Cookies["id"];
+            var rewardid = HttpContext.Request.Cookies["RewardId"];
+
+
                 userRewardService.CreateUserReward(new CreateUserRewardOptions
                 { 
-
                     UserId = userReward.UserId,
-                    RewardId = userReward.RewardId,
-                                       
+                    RewardId = userReward.RewardId
                 });
-        }
+
            return View(userReward);
         }
 

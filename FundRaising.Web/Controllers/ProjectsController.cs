@@ -76,6 +76,9 @@ namespace FundRaising.Web.Controllers
 
         public IActionResult Product(int? id)
         {
+            var dbProject = db.Projects.FirstOrDefault(e => e.ProjectId == id);
+            HttpContext.Response.Cookies.Append("projectId", dbProject.ProjectId.ToString());
+
             if (id == null)
             {
                 return NotFound();
