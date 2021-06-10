@@ -19,7 +19,7 @@ namespace FundRaising.Web.Controllers
         private IProjectService projectService;
         private IRewardService rewardService;
         private IUserRewardService userRewardService;
-        private FundRaisingDbContext db;
+        private readonly FundRaisingDbContext db;
 
         public RewardsController()
         {

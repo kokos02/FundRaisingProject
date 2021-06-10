@@ -19,7 +19,7 @@ namespace FundRaising.Web.Controllers
         private IProjectService projectService;
         private IRewardService rewardService;
         private IUserRewardService userRewardService;
-        private FundRaisingDbContext db;
+        private readonly FundRaisingDbContext db;
 
         public UserRewardsController()
         {
@@ -156,7 +156,7 @@ namespace FundRaising.Web.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             var userReward = db.UserRewards.Find(id);
-           db.UserRewards.Remove(userReward);
+            db.UserRewards.Remove(userReward);
             db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
