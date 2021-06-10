@@ -2,6 +2,7 @@
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Models;
 using FundRaising.Core.Options;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -123,6 +124,33 @@ namespace FundRaising.Core.Services
             }
 
             return Result<bool>.ServiceSuccessful(true);
+        }
+
+
+        public IQueryable<Reward> SearchRewardsByProject(SearchRewardOptions options)
+        {
+            var query = db.Set<Reward>().AsQueryable();
+
+            if (options.ProjectId != null)
+            {
+                query = query.Where(a => a.ProjectId == options.ProjectId.Value);
+            }
+            return query;
+        }
+
+
+        public Result<List<Reward>> GetRewardsByProject(int projectId)
+        {
+            var rewards = SearchRewardsByProject(new SearchRewardOptions
+            {
+                ProjectId = projectId
+            }).ToList();
+
+            if (rewards == null)
+            {
+                return Result<List<Reward>>.ServiceFailed(StatusCode.NotFound, "Project could not be found");
+            }
+            return Result<List<Reward>>.ServiceSuccessful(rewards);
         }
     }
 }

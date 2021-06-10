@@ -34,25 +34,24 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <a asp-action="Add" asp-route-id="@Model.ProjectId" asp-route-value="TextArea1.value">bale xrhma</a>
-                <div class="input-group mb-3">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <button asp-action="Add" asp-route-id="@Html.DisplayFor(model => model.ProjectId)" class="btn btn-outline-secondary" type="button">€</button>
-                        </div>
-                        <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="properties-box">
-                        <ul class="unstyle">
-                            <li><b class="propertyname">Current Fund</b> @Html.DisplayFor(model => model.CurrentFund)</li>
-                            <li><b class="propertyname">Deadline</b> @Html.DisplayFor(model => model.Deadline)</li>
-                            <li><b class="propertyname">Choose a Reward Package below</li>
-                            <li><b class="propertyname">50 euro package</b><a asp-action="Add" asp-route-id="@Model.ProjectId"> buy</a></li>
-                        </ul>
-                    </div>
+                <a asp-action="ShowProjectRewards" asp-route-id="@Model.ProjectId" class="btn btn-buynow"  >See available Rewards</a>
+                <div class="properties-box">
+                    <ul class="unstyle">
+                        <li><b class="propertyname">Version:</b> 1.0</li>
+                        <li><b class="propertyname">Image Size:</b> 2340x1200</li>
+                        <li><b class="propertyname">Files Included:</b> mp3, audio, jpeg, png</li>
+                        <li><b class="propertyname">Documentation:</b> Well Documented</li>
+                        <li><b class="propertyname">License:</b> GNU</li>
+                        <li><b class="propertyname">Requires:</b> Easy Digital Downloads</li>
+                        <li><b class="propertyname">Environment:</b> Wordpress</li>
+                        <li><b class="propertyname">Any Field Etc:</b> Any Detail</li>
+                        <li><b class="propertyname">Number:</b> Up to 20 specifications in this box</li>
+                        <li><b class="propertyname">Live Demo:</b><a target="_blank" href="http://www.wowthemes.net/">http://www.wowthemes.net/</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
 </section>
 
 <!-- CALL TO ACTION =============================-->

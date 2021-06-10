@@ -62,7 +62,7 @@ namespace FundRaising.Web.Controllers
 
         public IActionResult ShowProjectRewards(int id)
         {
-            var rewards = projectService.GetRewardsByProject(id);
+            var rewards = rewardService.GetRewardsByProject(id).Data;
             return View(rewards);
         }
 
