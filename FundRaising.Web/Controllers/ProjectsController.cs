@@ -10,6 +10,7 @@ using FundRaising.Core.Models;
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Services;
 using FundRaising.Core.Options;
+using System.Web;
 
 namespace FundRaising.Web.Controllers
 {
@@ -97,11 +98,13 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Project project)
         {
+            var id = HttpContext.Request.Cookies["id"];
+
             if (ModelState.IsValid)
             {
                 projectService.CreateProject(new CreateProjectOptions
                 {
-                    CreatorId = project.CreatorId,
+                    CreatorId = int.Parse(id),
                     Title = project.Title,
                     Description = project.Description,
                     ProjectCategory = project.ProjectCategory.ToString(),

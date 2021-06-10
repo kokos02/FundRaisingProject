@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FundRaising.Core.Data;
 using FundRaising.Core.Models;
 
+
 namespace FundRaising.Web.Controllers
 {
     public class LoginController : Controller
@@ -106,6 +107,9 @@ namespace FundRaising.Web.Controllers
                 return BadRequest("The password is invalid.");
 
             HttpContext.Response.Cookies.Append("Username", user.Username);
+            HttpContext.Response.Cookies.Append("id", dbUser.UserId.ToString());
+            //HttpContext.Response.Cookies.Append()
+
 
             return RedirectToAction("Index", "Home");
         }
