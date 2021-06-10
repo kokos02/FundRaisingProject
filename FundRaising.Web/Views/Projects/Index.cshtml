@@ -5,7 +5,7 @@
 }
 
 <p>
-    <a asp-action="Create">Create a new Project</a> 
+    <a asp-action="Create">Create a new Project</a>
     <!--<button type="button" asp-action="Create" class="btn btn-primary">Create a new Project</button> -->
 
 </p>
@@ -13,68 +13,51 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CreatorId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectCategory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
+                Project Category
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Deadline)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CurrentFund)
+               Current Fund
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TargetFund)
+               Target Fund
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatorId)
-            </td>
-            <a>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
-            </a>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectCategory)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deadline)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentFund)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TargetFund)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProjectId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProjectId">Delete</a> |
-                <a asp-action="Product" asp-route-id="@item.ProjectId">View</a>
-            </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectCategory)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deadline)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentFund)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TargetFund)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProjectId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProjectId">Delete</a> |
+                    <a asp-action="Product" asp-route-id="@item.ProjectId">View</a> |
+                    <a asp-action="Add" asp-route-id="@item.ProjectId">Add</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

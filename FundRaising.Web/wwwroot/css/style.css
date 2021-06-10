@@ -10,6 +10,10 @@ body {
 	line-height:1.7;
 }
 
+#navBarHome {
+	font-size: 130%;
+}
+
 #signUpButton{
 	position:absolute;
 	right:30%;
