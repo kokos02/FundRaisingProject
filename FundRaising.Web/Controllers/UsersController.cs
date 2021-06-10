@@ -16,10 +16,10 @@ namespace FundRaising.Web.Controllers
 {
     public class UsersController : Controller
     {
-        private IUserService userService;
-        private IProjectService projectService;
-        private IRewardService rewardService;
-        private IUserRewardService userRewardService;
+        private readonly IUserService userService;
+        private readonly IProjectService projectService;
+        private readonly IRewardService rewardService;
+        private readonly IUserRewardService userRewardService;
         private readonly FundRaisingDbContext db;
         public UsersController()
         {
@@ -86,7 +86,21 @@ namespace FundRaising.Web.Controllers
         }
 
 
+        // GET: Users/Edit/5
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var user = db.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
 
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
