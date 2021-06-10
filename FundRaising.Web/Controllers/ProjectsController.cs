@@ -19,7 +19,7 @@ namespace FundRaising.Web.Controllers
         private IProjectService projectService;
         private IRewardService rewardService;
         private IUserRewardService userRewardService;
-        private FundRaisingDbContext db;
+        private readonly FundRaisingDbContext db;
         public ProjectsController()
         {
             db = new FundRaisingDbContext();
@@ -28,6 +28,13 @@ namespace FundRaising.Web.Controllers
             rewardService = new RewardService(db, projectService);
             userRewardService = new UserRewardService(db, userService, projectService, rewardService);
         }
+
+        /*private IUserRewardService _userRewardService;
+        public ProjectsController(IUserRewardService userRewardService)
+        {
+            _userRewardService = userRewardService;
+        }*/
+
 
         // GET: Projects
         public IActionResult Index()
@@ -116,47 +123,50 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
+            var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
+
             var project = db.Projects.Find(id);
             if (project == null)
             {
                 return NotFound();
             }
+            else if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Login to edit the projects.");
+            }
+            else
+            {
+                var dbUser = db.Users.FirstOrDefault(e => e.Username == userName);
+                if (dbUser == null)
+                    return NotFound("User not found.");
+
+                if (dbUser.UserId != project.CreatorId)
+                    return BadRequest("Invalid user.");
+            }
+
             return View(project);
         }
 
-        // POST: Projects/Edit/5
+        // POST: Home/Login/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Project project)
+        public IActionResult Login(User user)
         {
-            if (id != project.ProjectId)
-            {
-                return NotFound();
-            }
+            if (user.Username == null || user.Password == null)
+                return BadRequest("Please provide a valid username and password combination.");
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    db.Update(project);
-                    db.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjectExists(project.ProjectId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(project);
+            var dbUser = db.Users
+                .FirstOrDefault(m => m.Username == user.Username);
+
+            if (dbUser == null)
+                return NotFound("User not found.");
+            else if (dbUser.Password != user.Password)
+                return BadRequest("The password is incorrect.");
+
+            HttpContext.Response.Cookies.Append("Username", user.Username);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Projects/Delete/5
