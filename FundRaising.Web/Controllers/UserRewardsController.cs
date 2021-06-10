@@ -15,10 +15,10 @@ namespace FundRaising.Web.Controllers
 {
     public class UserRewardsController : Controller
     {
-        private IUserService userService;
-        private IProjectService projectService;
-        private IRewardService rewardService;
-        private IUserRewardService userRewardService;
+        private readonly IUserService userService;
+        private readonly IProjectService projectService;
+        private readonly IRewardService rewardService;
+        private readonly IUserRewardService userRewardService;
         private readonly FundRaisingDbContext db;
 
         public UserRewardsController()

@@ -85,14 +85,7 @@ namespace FundRaising.Web.Controllers
             return View(user);
         }
 
-        public IActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-        // GET: Users/Edit/5
+       // GET: Users/Edit/5
         public IActionResult Edit(int? id)
         {
             if (id == null)
