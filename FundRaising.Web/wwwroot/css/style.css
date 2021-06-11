@@ -10,6 +10,12 @@ body {
 	line-height:1.7;
 }
 
+@media screen and (max-width: 1250px) {
+	.underlined-title {
+		margin-top: 8%;
+	}
+}
+
 #navBarHome {
 	font-size: 130%;
 }
