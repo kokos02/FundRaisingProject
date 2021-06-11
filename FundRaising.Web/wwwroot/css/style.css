@@ -16,6 +16,10 @@ body {
 	}
 }
 
+#productImage{
+	margin-top: -7%;
+}
+
 #navBarHome {
 	font-size: 130%;
 }

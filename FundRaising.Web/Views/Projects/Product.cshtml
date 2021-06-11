@@ -25,12 +25,14 @@
                     <img src="images/product2-2.jpg" alt="">
                     <div class="clearfix">
                     </div>
-                    <br />
+                    <br/>
                     <div class="product-details text-left">
-                        <img src="~/images/donation.png">
+                        <img id="productImage" src="~/images/donation.png">
+                        <br/>
                         <p>
                             @Html.DisplayFor(model => model.Description);
                         </p>
+                        <br/>
                         <a asp-area="" asp-controller="Rewards" asp-action="Create">Create Reward</a>
                     </div>
                 </div>
