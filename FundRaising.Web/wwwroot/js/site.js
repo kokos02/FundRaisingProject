@@ -4,7 +4,3 @@
 // Write your JavaScript code.
 
 
-    function loginout(){
-    document.getElementById("loginButton").innerHTML = "Logout";
-}
-
