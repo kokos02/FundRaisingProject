@@ -68,7 +68,7 @@ namespace FundRaising.Web.Controllers
                 RewardId = int.Parse(rewardid)
             });
 
-            return RedirectToAction(nameof(Index));
+            return Content("Thank you!");
         }
 
         // POST: UserRewards/Create
