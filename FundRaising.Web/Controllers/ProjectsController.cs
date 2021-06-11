@@ -10,6 +10,7 @@ using FundRaising.Core.Models;
 using FundRaising.Core.Interfaces;
 using FundRaising.Core.Services;
 using FundRaising.Core.Options;
+using System.Web;
 
 namespace FundRaising.Web.Controllers
 {
@@ -75,6 +76,9 @@ namespace FundRaising.Web.Controllers
 
         public IActionResult Product(int? id)
         {
+            var dbProject = db.Projects.FirstOrDefault(e => e.ProjectId == id);
+            HttpContext.Response.Cookies.Append("projectId", dbProject.ProjectId.ToString());
+
             if (id == null)
             {
                 return NotFound();
@@ -97,11 +101,13 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Project project)
         {
+            var id = HttpContext.Request.Cookies["id"];
+
             if (ModelState.IsValid)
             {
                 projectService.CreateProject(new CreateProjectOptions
                 {
-                    CreatorId = project.CreatorId,
+                    CreatorId = int.Parse(id),
                     Title = project.Title,
                     Description = project.Description,
                     ProjectCategory = project.ProjectCategory.ToString(),

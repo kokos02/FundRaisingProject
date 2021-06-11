@@ -40,6 +40,9 @@ namespace FundRaising.Web.Controllers
         // GET: Rewards/Details/5
         public IActionResult Details(int? id)
         {
+            var dbReward = db.Rewards.FirstOrDefault(e => e.RewardId == id);
+            HttpContext.Response.Cookies.Append("RewardId", dbReward.RewardId.ToString());
+
             if (id == null)
             {
                 return NotFound();
@@ -68,11 +71,12 @@ namespace FundRaising.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Reward reward)
         {
+            var id = HttpContext.Request.Cookies["projectId"];
             if (ModelState.IsValid)
             {
                 rewardService.CreateReward(new CreateRewardOptions
                 {
-                    ProjectId = reward.ProjectId,
+                    ProjectId = int.Parse(id),
                     Title = reward.Title,
                     Description = reward.Description,
                     Price = reward.Price
@@ -83,17 +87,34 @@ namespace FundRaising.Web.Controllers
         }
 
         // GET: Rewards/Edit/5
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int? id, Reward rewards)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
+            
+
             var reward = db.Rewards.Find(id);
             if (reward == null)
             {
                 return NotFound();
+            }
+            else if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Login to edit the rewards.");
+            }
+            else
+            {
+                var project = db.Projects.FirstOrDefault(x => x.ProjectId == reward.ProjectId);
+                var dbUser = db.Users.FirstOrDefault(e => e.Username == userName);
+                if (dbUser == null)
+                    return NotFound("User not found.");
+
+                if (dbUser.UserId != project.CreatorId)
+                    return BadRequest("Invalid user.");
             }
             return View(reward);
         }
@@ -134,10 +155,34 @@ namespace FundRaising.Web.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(_reward);
         }
+
+        // POST: Home/Login/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(User user)
+        {
+            if (user.Username == null || user.Password == null)
+                return BadRequest("Please provide a valid username and password combination.");
+
+            var dbUser = db.Users
+                .FirstOrDefault(m => m.Username == user.Username);
+
+            if (dbUser == null)
+                return NotFound("User not found.");
+            else if (dbUser.Password != user.Password)
+                return BadRequest("The password is incorrect.");
+
+            HttpContext.Response.Cookies.Append("Username", user.Username);
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Rewards/Delete/5
         public IActionResult Delete(int? id)
@@ -147,11 +192,31 @@ namespace FundRaising.Web.Controllers
                 return NotFound();
             }
 
+            var userName = HttpContext.Request.Cookies.FirstOrDefault(e => e.Key == "Username").Value;
+
+
             var reward = db.Rewards
                 .FirstOrDefault(m => m.RewardId == id);
+
             if (reward == null)
             {
                 return NotFound();
+            }
+
+            else if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("You must be logged in to delete the reward");
+            }
+
+            else
+            {
+                var dbUser = db.Users.FirstOrDefault(e => e.Username == userName);
+                var dbproject = db.Projects.FirstOrDefault(x => x.ProjectId == reward.ProjectId);
+                if (dbUser == null)
+                    return NotFound("User not found.");
+
+                if (dbUser.UserId != dbproject.CreatorId)
+                    return BadRequest("Invalid user.");
             }
 
             return View(reward);

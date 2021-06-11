@@ -13,11 +13,6 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CreatorId" class="control-label"></label>
-                <input asp-for="CreatorId" class="form-control" />
-                <span asp-validation-for="CreatorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
@@ -40,28 +35,39 @@
                 <span asp-validation-for="ProjectCategory" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>*@
+            <label asp-for="Created" class="control-label"></label>
+            <input asp-for="Created" class="form-control" />
+            <span asp-validation-for="Created" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <label asp-for="Deadline" class="control-label"></label>
                 <input asp-for="Deadline" class="form-control" />
                 <span asp-validation-for="Deadline" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-                <label asp-for="CurrentFund" class="control-label"></label>
-                <input asp-for="CurrentFund" class="form-control" />
-                <span asp-validation-for="CurrentFund" class="text-danger"></span>
-            </div>*@
+            <label asp-for="CurrentFund" class="control-label"></label>
+            <input asp-for="CurrentFund" class="form-control" />
+            <span asp-validation-for="CurrentFund" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <label asp-for="TargetFund" class="control-label"></label>
                 <input asp-for="TargetFund" class="form-control" />
                 <span asp-validation-for="TargetFund" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input id="createProjectButton" type="submit" OnClick="PreventDoubleClick()" value="Create" class="btn btn-default" />
             </div>
+
+            <script type="text/javascript">
+                var submit = 0;
+                function PreventDoubleClick() {
+                    if (++submit > 1) {
+                        document.getElementById("createProjectButton").disabled = true;
+                        return false;
+                    }
+                }
+            </script>
+
         </form>
     </div>
 </div>

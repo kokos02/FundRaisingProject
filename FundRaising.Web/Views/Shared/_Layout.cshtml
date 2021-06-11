@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="@Url.Content("~/css/bootstrap.min.css")" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="@Url.Content("~/css/style.css")" />
     <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700" rel="stylesheet">
 </head>
@@ -27,10 +27,9 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="propClone"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                             <li class="propClone"><a asp-area="" asp-controller="Projects" asp-action="Index">Projects</a></li>
-                            <li class="propClone"><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
                             <li class="propClone"><a asp-area="" asp-controller="Rewards" asp-action="Index">Rewards</a></li>
-                            <li class="propClone"><a asp-area="" asp-controller="UserRewards" asp-action="Index">Buy a Reward</a></li>
-                            <li class="propClone"><a asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
+                            <li class="propClone"><a id="loginButton" asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
+                            <li class="propClone"><a asp-area="" asp-controller="Users" asp-action="Create">Register</a></li>
                         </ul>
                     </div>
                 </div>
@@ -115,7 +114,6 @@
 
     <script src="/js/jquery-.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/anim.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -13,11 +13,6 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ProjectId" class="control-label"></label>
-                <input asp-for="ProjectId" class="form-control" />
-                <span asp-validation-for="ProjectId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
@@ -33,8 +28,19 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" id="createRewardButton" OnClick="PreventDoubleClick()" value="Create" class="btn btn-default" />
             </div>
+
+            <script type="text/javascript">
+                var submit = 0;
+                function PreventDoubleClick() {
+                    if (++submit > 1) {
+                        document.getElementById("createRewardButton").disabled = true;
+                        return false;
+                    }
+                }
+            </script>
+
         </form>
     </div>
 </div>
