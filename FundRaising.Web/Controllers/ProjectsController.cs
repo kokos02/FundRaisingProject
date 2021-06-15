@@ -103,6 +103,9 @@ namespace FundRaising.Web.Controllers
         {
             var id = HttpContext.Request.Cookies["id"];
 
+            if (id == "NotSignedIn")
+                return BadRequest("Please log in to create a project");
+
             if (ModelState.IsValid)
             {
                 projectService.CreateProject(new CreateProjectOptions

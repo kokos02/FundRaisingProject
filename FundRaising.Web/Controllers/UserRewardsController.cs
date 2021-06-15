@@ -79,10 +79,6 @@ namespace FundRaising.Web.Controllers
         public IActionResult Create(UserReward userReward)
         {
 
-            var id = HttpContext.Request.Cookies["id"];
-            var rewardid = HttpContext.Request.Cookies["RewardId"];
-
-
                 userRewardService.CreateUserReward(new CreateUserRewardOptions
                 { 
                     UserId = userReward.UserId,
