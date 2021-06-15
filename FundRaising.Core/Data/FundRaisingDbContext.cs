@@ -9,7 +9,7 @@ namespace FundRaising.Core.Data
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer("Server = tcp:fundraisingserver.database.windows.net, 1433; Initial Catalog = FundRaisingDbContext; Persist Security Info = False; User ID = fundraising; Password = 600skam7032A; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;");
+            optionsBuilder.UseSqlServer("Data Source = localhost; Initial Catalog= FundRaisingDbContext; Integrated Security = true");
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }

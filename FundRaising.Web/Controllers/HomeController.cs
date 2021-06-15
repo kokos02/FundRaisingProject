@@ -20,6 +20,7 @@ namespace FundRaising.Web.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Response.Cookies.Append("id", "NotSignedIn");
             return View();
         }
 
